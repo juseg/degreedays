@@ -1,0 +1,15 @@
+# Files produces by latex
+*.aux
+*.bbl
+*.blg
+*.fff
+*.log
+*.out
+*.pdf
+*.ttt
+
+# My stuff
+*.old
+*.sh
+/versions
+
