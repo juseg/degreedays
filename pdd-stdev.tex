@@ -27,10 +27,13 @@ The effect of day-to-day variations of temperature on surface melt was recognize
 
 More recently, \citet{calov-greve-2005} showed that, under the normal distribution assumption, the PDD integral could then be reformulated as
 
-		\exp\left({-\frac{T_{ac}(t)^2}{2\sigma^2}}\right)
-		+\frac{T_{ac}(t)}{2}
-		\mathrm{erfc} \left(-\frac{T_{ac}(t)}{\sqrt{2}\sigma}\right)
-	\right],
+\begin{equation}
+  \mathrm{PDD} = \int_{0}^{A} dt \left[
+    \frac{\sigma}{\sqrt{2\pi}}
+    \exp\left({-\frac{T_{ac}(t)^2}{2\sigma^2}}\right)
+    +\frac{T_{ac}(t)}{2}
+    \mathrm{erfc} \left(-\frac{T_{ac}(t)}{\sqrt{2}\sigma}\right)
+  \right],
 \end{equation}
 
 where $T_{ac}$ is the annual temperature cycle and $\sigma$ and the standard deviation of temperature, thereby providing a more computationally-efficient expression to numerical glacier models.
