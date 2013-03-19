@@ -11,28 +11,31 @@ plt.rc('font', size=6)
 plt.rc('savefig', dpi=254)
 plt.rc('path', simplify=True)
 mm = 1/25.4
-pad= 5*mm
+pad = 2*mm
+cbh = 4*mm
+bot = 4*mm
 
 def stdev():
 
     # prepare figure
     mapw, maph = 80*mm, 40*mm
     figw =   mapw + 2*pad
-    figh = 2*maph + 5*pad 
+    figh = 2*maph + 3*pad + cbh + bot
     fig = plt.figure(figsize=(figw, figh))
 
     # plot data
     filename = 'atm.nc'
     cube = iris.load(filename)[0]
     for i in (0, 1):
-      ax = plt.axes([pad/figw,(i*maph+(i+3)*pad)/figh,mapw/figw,maph/figh],
+      ax = plt.axes(
+        [pad/figw, (i*maph+(i+1)*pad+cbh+bot)/figh, mapw/figw, maph/figh],
         projection=ccrs.PlateCarree())
       ax.coastlines()
       cs = iplt.contourf(cube[i*6], 10,
         cmap = plt.cm.Greys)
 
     # add colorbar and save
-    cax = plt.axes([pad/figw, pad/figh, 1-2*pad/figw, pad/figh])
+    cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
     fig.savefig('stdev.png')
 
@@ -43,19 +46,19 @@ def diff(isrelative=False):
     sproj = ccrs.SouthPolarStereo()
     mapw, maph = 40*mm, 40*mm
     figw = 2*mapw + 3*pad
-    figh = 2*maph + 5*pad 
+    figh = 2*maph + 3*pad + cbh + bot
     fig = plt.figure(figsize=(figw, figh))
     axx1 = (       pad)/figw
     axx2 = (mapw+2*pad)/figw
-    axy1 = (maph+4*pad)/figh
-    axy2 = (     3*pad)/figh
+    axy1 = (maph+2*pad+cbh+bot)/figh
+    axy2 = (     1*pad+cbh+bot)/figh
     axw = mapw/figw
     axh = maph/figh
     ax1 = plt.axes([axx1, axy1, axw, axh], projection=nproj)
     ax2 = plt.axes([axx2, axy1, axw, axh], projection=sproj)
     ax3 = plt.axes([axx1, axy2, axw, axh], projection=nproj)
     ax4 = plt.axes([axx2, axy2, axw, axh], projection=sproj)
-    cax = plt.axes([pad/figw, pad/figh, 1-2*pad/figw, pad/figh])
+    cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
 
     # plot data
     basename = ('r' if isrelative else 'a') + 'diff'

@@ -1,6 +1,8 @@
 \documentclass[twocolumn]{igs}
 \usepackage{igsnatbib}
 \usepackage{stfloats}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
 
 % ----------------------------------------------------------------------
 
@@ -55,7 +57,7 @@ Monthly standard deviations of daily temperatures were computed from the ERA-Int
 This approach captures not only the day-to-day but also the year-to-year variation of air surface temperature. Temperature time-series, however, were not been detrended from the annual cycle, which may have lead to slightly overestimates values in Spring and Autumn months.
 
 \begin{figure}
-  \framebox[\linewidth]{STDEV}
+  \centering\includegraphics{stdev}
   \caption{January (top) and July (bottom) monthly standard deviations of daily mean temperature from the ERA-Interim analysis data. The maps show higher values in winter and in continental regions.}
   \label{fig:stdev}
 \end{figure}
@@ -65,9 +67,15 @@ Computed values range from 0.32 to 12.63\,K, with a global seasonal average of 2
 \section{Surface mass balance}
 
 \begin{figure}
-  \framebox[\linewidth]{SMB}
-  \caption{Differences in PDD-modelled surface mass balance relative to a model without temperature variability ($\sigma=0$, top) and a model with fixed temperature variability ($\sigma=5\,\mathrm{K}$, bottom).}
-  \label{fig:smb}
+  \centering\includegraphics{adiff}
+  \caption{Absolute differences in PDD-modelled surface mass balance relative to a model without temperature variability ($\sigma=0$, top) and a model with fixed temperature variability ($\sigma=5\,\mathrm{K}$, bottom).}
+  \label{fig:adiff}
+\end{figure}
+
+\begin{figure}
+  \centering\includegraphics{rdiff}
+  \caption{Relative differences in PDD-modelled surface mass balance relative to a model without temperature variability ($\sigma=0$, top) and a model with fixed temperature variability ($\sigma=5\,\mathrm{K}$, bottom).}
+  \label{fig:rdiff}
 \end{figure}
 
 \bibliography{references}
