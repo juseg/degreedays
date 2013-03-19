@@ -44,11 +44,23 @@ Here I show that the $\sigma$ parameter is highly variable spatially and seasona
 
 \section{Temperature variability}
 
+Monthly standard deviations of daily temperatures were computed from the ERA-Interim\citep{data:erai} analysis (step~0) data using the following algorythm:
+
+\begin{enumerate}
+  \item daily means of surface air temperature were calculated by averaging the four daily analysis time steps (00:00, 06:00, 12:00, 18:00);
+  \item daily means were stacked by month over a 22-years (1979--2012) time interval;
+  \item monthly standard deviation were computed for each month.
+\end{enumerate}
+
+This approach captures not only the day-to-day but also the year-to-year variation of air surface temperature. Temperature time-series, however, were not been detrended from the annual cycle, which may have lead to slightly overestimates values in Spring and Autumn months.
+
 \begin{figure}
   \framebox[\linewidth]{STDEV}
   \caption{January (top) and July (bottom) monthly standard deviations of daily mean temperature from the ERA-Interim analysis data. The maps show higher values in winter and in continental regions.}
   \label{fig:stdev}
 \end{figure}
+
+Computed values range from 0.32 to 12.63\,K, with a global seasonal average of 2.02\,K. January and July distributions are shown in Figure~\ref{fig:stdev}. There is a tendency for higher dtandard deviation of temperature in continental regions, and in winter.
 
 \section{Surface mass balance}
 
