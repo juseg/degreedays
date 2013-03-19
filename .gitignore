@@ -8,8 +8,10 @@
 *.pdf
 *.ttt
 
-# My stuff
-*.old
-*.sh
+# Figures and data files
+*.png
+*.nc
+
+# Saved versions
 /versions
 
