@@ -28,11 +28,11 @@ def stdev():
     cube = iris.load(filename)[0]
     for i in (0, 1):
       ax = plt.axes(
-        [pad/figw, (i*maph+(i+1)*pad+cbh+bot)/figh, mapw/figw, maph/figh],
+        [pad/figw, ((1-i)*maph+(2-i)*pad+cbh+bot)/figh, mapw/figw, maph/figh],
         projection=ccrs.PlateCarree())
       ax.coastlines()
       cs = iplt.contourf(cube[i*6], 10,
-        cmap = plt.cm.Greys)
+        cmap = plt.cm.YlGnBu)
 
     # add colorbar and save
     cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
@@ -54,35 +54,34 @@ def diff(isrelative=False):
     axy2 = (     1*pad+cbh+bot)/figh
     axw = mapw/figw
     axh = maph/figh
-    ax1 = plt.axes([axx1, axy1, axw, axh], projection=nproj)
-    ax2 = plt.axes([axx2, axy1, axw, axh], projection=sproj)
-    ax3 = plt.axes([axx1, axy2, axw, axh], projection=nproj)
-    ax4 = plt.axes([axx2, axy2, axw, axh], projection=sproj)
+    grid = [
+      plt.axes([axx1, axy1, axw, axh], projection=nproj),
+      plt.axes([axx2, axy1, axw, axh], projection=nproj),
+      plt.axes([axx1, axy2, axw, axh], projection=nproj),
+      plt.axes([axx2, axy2, axw, axh], projection=nproj)]
     cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
 
     # plot data
     basename = ('r' if isrelative else 'a') + 'diff'
-    filename = basename + '-s%s.nc'
-    diff0 = iris.load_cube(filename % 0)
-    diff5 = iris.load_cube(filename % 5)
+    filename = basename + '-%s.nc'
+    data = [iris.load(filename % s)[1] for s in ['s0', 's5', 'avg', 'jja']]
     if isrelative:
       levs = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
-      cmap = plt.cm.RdPu
+      cmap = plt.cm.YlGnBu
+      cmap.set_under('w')
+      cmap.set_over('k')
       norm = mpl.colors.BoundaryNorm(levs, 256, clip=True)
     else:
-      levs = [i/2. - 2 for i in range(9)]
-      cmap = plt.cm.RdBu
+      levs = [i*50 for i in range(-6,7)]
+      cmap = plt.cm.RdBu_r
       norm = mpl.colors.BoundaryNorm(levs, 256, clip=True)
-    for ax in ax1, ax2, ax3, ax4:
+    for i, ax in enumerate(grid):
       ax.set_xlim((-5e6, 5e6))
       ax.set_ylim((-5e6, 5e6))
+      plt.sca(ax)
+      cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both')
+      iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid')
       ax.coastlines()
-    for ax in ax1, ax2:
-      plt.sca(ax)
-      cs = iplt.contourf(diff0, levs, cmap=cmap, norm=norm)
-    for ax in ax3, ax4:
-      plt.sca(ax)
-      cs = iplt.contourf(diff5, levs, cmap=cmap, norm=norm)
 
     # add colorbar and save
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
@@ -90,7 +89,7 @@ def diff(isrelative=False):
 
 if __name__ == '__main__':
 
-    stdev()
+    #stdev()
     diff(isrelative=False)
-    diff(isrelative=True)
+    #diff(isrelative=True)
 
