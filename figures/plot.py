@@ -65,6 +65,7 @@ def diff(isrelative=False):
     basename = ('r' if isrelative else 'a') + 'diff'
     filename = basename + '-%s.nc'
     data = [iris.load(filename % s)[1] for s in ['s0', 's5', 'avg', 'jja']]
+    cases = ['0', '5', 'ANN', 'JJA']
     if isrelative:
       levs = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
       cmap = plt.cm.YlGnBu
@@ -81,6 +82,7 @@ def diff(isrelative=False):
       plt.sca(ax)
       cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both')
       iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid')
+      iplt.citation('$%s_{%s}$' % ('r' if isrelative else 'd', cases[i]))
       ax.coastlines()
 
     # add colorbar and save
@@ -91,5 +93,5 @@ if __name__ == '__main__':
 
     #stdev()
     diff(isrelative=False)
-    #diff(isrelative=True)
+    diff(isrelative=True)
 
