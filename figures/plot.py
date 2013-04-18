@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import cartopy.crs as ccrs
-import matplotlib as mpl
-from matplotlib import pyplot as plt
-
 import iris
 import iris.plot as iplt
+from matplotlib import colors as mcolors
+from matplotlib import ticker as mticker
+from matplotlib import pyplot as plt
 
 plt.rc('font', size=6)
 plt.rc('savefig', dpi=254)
@@ -13,7 +13,7 @@ plt.rc('path', simplify=True)
 mm = 1/25.4
 pad = 2*mm
 cbh = 4*mm
-bot = 4*mm
+bot = 8*mm
 
 def stdev():
 
@@ -31,12 +31,13 @@ def stdev():
         [pad/figw, ((1-i)*maph+(2-i)*pad+cbh+bot)/figh, mapw/figw, maph/figh],
         projection=ccrs.PlateCarree())
       ax.coastlines()
-      cs = iplt.contourf(cube[i*6], 10,
-        cmap = plt.cm.YlGnBu)
+      cs = iplt.contourf(cube[i*6], 10, cmap = plt.cm.YlGnBu)
+      iplt.contour(cube[i*6], 10, colors='k', linewidths=0.2)
 
     # add colorbar and save
     cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
+    cb.set_label('Standard deviation of surface air temperature (K)')
     fig.savefig('stdev.png')
 
 def diff(isrelative=False):
@@ -71,22 +72,29 @@ def diff(isrelative=False):
       cmap = plt.cm.YlGnBu
       cmap.set_under('w')
       cmap.set_over('k')
-      norm = mpl.colors.BoundaryNorm(levs, 256, clip=True)
+      norm = mcolors.BoundaryNorm(levs, 256, clip=True)
     else:
       levs = [i*50 for i in range(-6,7)]
       cmap = plt.cm.RdBu_r
-      norm = mpl.colors.BoundaryNorm(levs, 256, clip=True)
+      norm = mcolors.BoundaryNorm(levs, 256, clip=True)
     for i, ax in enumerate(grid):
       ax.set_xlim((-5e6, 5e6))
       ax.set_ylim((-5e6, 5e6))
       plt.sca(ax)
       cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both')
       iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid')
-      iplt.citation('$%s_{%s}$' % ('r' if isrelative else 'd', cases[i]))
+      iplt.citation('$%s_\mathrm{%s}$' % ('r' if isrelative else 'd', cases[i]))
       ax.coastlines()
 
     # add colorbar and save
-    cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
+    if isrelative:
+      topc = lambda x, pos: '%g%%' % (x*100) if abs(x) < 1 else '%g' % x
+      cb = plt.colorbar(cs, cax, orientation='horizontal',
+        format=mticker.FuncFormatter(topc))
+      cb.set_label('Relative PDD error')
+    else:
+      cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
+      cb.set_label('Absolute PDD error (K day)')
     fig.savefig(basename + '.png')
 
 if __name__ == '__main__':
