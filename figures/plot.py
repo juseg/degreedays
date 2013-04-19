@@ -15,6 +15,8 @@ pad = 2*mm
 cbh = 4*mm
 bot = 8*mm
 
+fmt = 'png'
+
 def stdev():
 
     # prepare figure
@@ -38,7 +40,7 @@ def stdev():
     cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
     cb.set_label('Standard deviation of surface air temperature (K)')
-    fig.savefig('stdev.png')
+    fig.savefig('stdev' + fmt)
 
 def diff(isrelative=False):
 
@@ -95,7 +97,7 @@ def diff(isrelative=False):
     else:
       cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
       cb.set_label('Absolute PDD error (K day)')
-    fig.savefig(basename + '.png')
+    fig.savefig(basename + '.' + fmt)
 
 if __name__ == '__main__':
 
