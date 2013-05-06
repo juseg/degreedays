@@ -89,13 +89,10 @@ def diff(isrelative=False):
       ax.coastlines()
 
     # add colorbar and save
+    cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
     if isrelative:
-      topc = lambda x, pos: '%g%%' % (x*100) if abs(x) < 1 else '%g' % x
-      cb = plt.colorbar(cs, cax, orientation='horizontal',
-        format=mticker.FuncFormatter(topc))
       cb.set_label('Relative PDD error')
     else:
-      cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
       cb.set_label('Absolute PDD error (K day)')
     fig.savefig(basename + '.' + fmt)
 
