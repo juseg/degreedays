@@ -18,10 +18,10 @@
 
 \section{Introduction}
 
-The positive degree day model is a parametrization of surface melt introduced by \citet{braithwaite-1984} and widely used in glacier modelling. Melt is assumed to be proportional to the number of Positive Degree Days (PDD), defined as the integral of positive, mean daily Celcius temperatures $T$ over a time interval $A$, typically a year,
+The positive degree day model is a parametrization of surface melt introduced by \citet{braithwaite-1984} and widely used in glacier modelling. Melt is assumed to be proportional to the number of Positive Degree Days (PDD), defined as the integral of positive, daily mean Celcius temperature $T$ over a time interval $A$, typically a year,
 
 \begin{equation} \label{eq:pdd}
-  \mathrm{PDD} = \int_{0}^{A}\max(T(t),0)\,dt,
+  \mathrm{PDD} = \int_{0}^{A}\max(T(t),0)\,dt.
 \end{equation}
 
 The effect of day-to-day variations of temperature on surface melt was recognized by \citet{braithwaite-1984} and later modelled by \citet{reeh-1991}, who assumed a normal probability distribution of $T$ around its annual cycle $T_{ac}$ and rewrote the PDD as
@@ -44,7 +44,7 @@ where $\sigma$ is the standard deviation of the temperature distribution. More r
   \right]dt.
 \end{equation}
 
-The normal distribution approach has been implemented and used in several glacier models. However, $\sigma$ is often assumed constant in time and space, despite being a major control on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}.
+The normal distribution approach has been implemented and used in several glacier models. However, $\sigma$ is often assumed constant in time and space, despite being a major constraint on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}.
 
 Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on the PDD computation.
 
@@ -52,63 +52,65 @@ Here I show that $\sigma$ is in fact highly variable spatially and seasonally, w
 
 \section{Temperature variability}
 
-Monthly standard deviations of daily mean temperatures were computed from the ERA-Interim reanalysis \citep{data:erai} data using the following algorithm:
+The monthly standard deviation of daily mean temperature was computed from the ERA-Interim reanalysis \citep{data:erai} data using the following algorithm:
 
 \begin{enumerate}
-  \item daily means of surface air temperature were calculated by averaging the four daily analysis time steps (00:00, 06:00, 12:00, 18:00);
+  \item daily means of surface air temperature were computed as averages of the four daily analysis time steps (00:00, 06:00, 12:00, 18:00);
   \item daily means were stacked by month over a 24-year (1979--2012) time interval;
   \item twelve monthly standard deviation grids were computed from the stacked daily means.
 \end{enumerate}
 
-This approach captures not only day-to-day but also year-to-year variations of air surface temperature. However, the annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in Spring and Autumn.
+This approach captures the day-to-day and year-to-year variations of surface air temperature. However, the annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in Spring and Autumn when temperature varies significantly between the beginning and the end of a month.
 
 \begin{figure}
   \centering\includegraphics{stdev}
-  \caption{January (top) and July (bottom) monthly standard deviations of daily mean temperature from the ERA-Interim reanalysis \citep{data:erai} data for the perdiod 1979--2012. The maps show higher values in winter and over continental regions.}
+  \caption{January (top) and July (bottom) distributions of monthly standard deviation of daily mean surface air temperature from the ERA-Interim reanalysis \citep{data:erai} data for the period 1979--2012. The maps show higher values in winter and over continental regions.}
   \label{fig:stdev}
 \end{figure}
 
-Computed monthly standard devation values range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. January and July distributions are shown in Figure~\ref{fig:stdev}. There is a tendency for higher values over continental regions and in Winter.
+Computed standard devation values range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. As shown in Figure~\ref{fig:stdev}, there is a tendency for higher values over continental regions and in Winter.
 
 % ----------------------------------------------------------------------
 
 \section{PDD modelling}
 
-A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, was computed using equation~\ref{eq:calovgreve}, ERA-Interim monthly means of daily mean surface air temperature and monthly standard deviations described above.
+A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, was computed using equation~\ref{eq:calovgreve}, ERA-Interim monthly mean of daily mean surface air temperature, and ERA-Interim monthly standard deviation of daily mean surface air temperature described above.
 
-Furthermore, PDDs were computed in four additional scenarios:
+Furthermore, a PDD distribution was computed in four additional scenarios:
 
 \begin{enumerate}
   \item using equation~\ref{eq:pdd} ($\mathrm{PDD_{0}}$);
   \item using equation~\ref{eq:calovgreve} with $\sigma=5$ ($\mathrm{PDD_{5}}$);
-  \item using annual means of standard deviations ($\mathrm{PDD_{ANN}}$);
-  \item using boreal summer (JJA) means of standard deviations ($\mathrm{PDD_{JJA}}$).
+  \item using an annual mean of standard deviation ($\mathrm{PDD_{ANN}}$);
+  \item using a boreal summer (JJA) mean of standard deviation ($\mathrm{PDD_{JJA}}$).
 \end{enumerate}
 
 For each scenario, absolute and relative errors relative to $\mathrm{PDD_{ERA}}$ were computed as
 
 \begin{eqnarray}
-  d_i &=& \mathrm{PDD}_i - \mathrm{PDD_{ERA}}, \\
+  d_i &=& \mathrm{PDD}_i - \mathrm{PDD_{ERA}}, \mathrm{and}\\
   r_i &=& \left|\frac{d_i}{\mathrm{PDD_{ERA}}}\right|.
 \end{eqnarray}
 
 \begin{figure}
   \centering\includegraphics{adiff}
-  \caption{Absolute PDD errors using (a) zero temperature variability, (b) fixed temperature variability ($\sigma=5\,\mathrm{K}$), (c) mean annual temperature variability, (d) mean JJA temperature variability.}
+  \caption{Absolute PDD error using (a) zero temperature variability, (b) fixed temperature variability ($\sigma=5\,\mathrm{K}$), (c) mean annual temperature variability, (d) mean JJA temperature variability.}
   \label{fig:adiff}
 \end{figure}
 
 \begin{figure}
   \centering\includegraphics{rdiff}
-  \caption{Relative PDD errors in the same scenarios as Figure~\ref{fig:adiff}}
+  \caption{Relative PDD error in the same scenarios as in Figure~\ref{fig:adiff}.}
   \label{fig:rdiff}
 \end{figure}
 
-All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figures~\ref{fig:adiff} and ~\ref{fig:rdiff}). Assuming zero temperature variability generally underestimates PDD values. Assuming $\sigma=5$ reduces errors in continental northern America and Eurasia but overestimates PDD values in coastal locations and over the Greenland ice sheet. Using mean annual standard deviation overestimates melt in most of the Arctic. Using mean JJA standard deviation generally yields smaller errors; however significant relative errors remain, particularly over the Greenland ice sheet where PDD values are low.
+All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figures~\ref{fig:adiff} and ~\ref{fig:rdiff}). Assuming zero temperature variability generally underestimated PDD values. Assuming $\sigma=5$ reduced errors in continental northern America and Eurasia but overestimated PDD values in coastal locations and over the Greenland ice sheet. Using mean annual standard deviation overestimated melt in most of the Arctic. Using mean JJA standard deviation generally yielded smaller errors; however significant relative errors remained, particularly over the Greenland ice sheet where PDD values are low.
+
+% ----------------------------------------------------------------------
 
 \section{Conclusion}
 
-The standard deviation of mean daily temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy the PDD estimation. Numerical glacier models that use a PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface temperature in order to more realistically capture patterns of surface melt.
+The standard deviation of daily mean temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy the PDD estimation. Numerical glacier models that use a PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface temperature in order to more realistically capture patterns of surface melt.
 
 \bibliography{references}
 \bibliographystyle{igs}
