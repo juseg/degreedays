@@ -1,0 +1,93 @@
+\documentclass{letter}
+
+\signature{Julien Seguinot}
+\address{
+  julien.seguinot@natgeo.su.se\\\\
+  Stockholm University\\
+  SE-106 91 Stockholm\\
+  SWEDEN}
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\newcommand{\rev}[0]{\color{blue!50!black}\it}
+\newcommand{\textrev}[1]{{\rev``#1''}}
+\newcommand{\revpoint}[1]{{\rev\item``#1''}}
+\newcommand{\todo}[1]{\textcolor{red!50!black}{Todo: #1}}
+\newcommand{\done}[1]{\textcolor{green!50!black}{Done: #1}}
+
+% ----------------------------------------------------------------------
+
+\begin{document}
+\begin{letter}{Reply to the first review by Regine Hock}
+
+\opening{Dear Editor,}
+
+\textrev{Positive degree day sums (PDD) depend on the way they are calculated specially when temperatures fluctuate around the freezing point. The paper addresses this problem. The author uses ERA40 interim daily mean temperatures to show that temperature variability varies seasonally and spatially, and concludes that spatially and seasonally variable standard deviations of daily temperature should be used in PDD schemes. The analysis appears sound, and overall the paper is well-written. However, I am not sure how useful this paper is in its present form. I have a number of concerns that the author should address.}
+
+% ----------------------------------------------------------------------
+
+\textbf{General comments}
+
+\begin{enumerate}[resume]
+
+    \revpoint{The author appears to have little knowledge of the vast literature of degree-day modeling. The paper is exclusively focused on ice-sheet modeling using of the Calov and Greve 2005 formulation. This in itself is not a problem, however, nowhere in the paper is that made clear. Degree-day models are used in many disciplines and in many different ways using data input of various time resolution (see review Hock, 2003), however, as written, it appears as if the only way degree-day models are applied is annual integrals of positive temperatures with superimposed daily variability based on a (constant) standard deviation. The paper should cite relevant literature and make clear (preferably also in the title) that the paper focuses on ice sheet modeling and the Calov and Greve 2005 formulation, basically testing its validity and applicability, since obviously the ice sheet community is not considering seasonal variability yet (?). In fact such variability has been included in other DD applications (see papers by Huss on glacier runoff simulations from the Alps).}
+
+    My reply.
+
+    \todo{Change the title}
+
+    \done{Title changed}
+
+    \revpoint{The author shows the large spatial and seasonal variability of daily mean temperatures. This in itself is not really anything new but obvious from direct observations and gridded climate products and has been well documented in the literature. Though possibly beyond the scope of the paper, it would be more interesting to show (in addition to the effect on PDD) what the effect of this known variability is on the surface mass balance results in ice-sheet modeling.}
+
+    \revpoint{Spatial coverage: The analysis includes a large spatial domain (globe: Fig 1, most of the northern hemisphere for all other figures). Some of the figures indicate little variation over Greenland, however, this may be due to the scale necessary to display the region outside Greenland. Given the ice-sheet modeling focus it would be more interesting to restrict the analysis to the domain of the Greenland ice sheet. The differences to the surrounding ocean seem not too relevant in the context. The interesting question is: do the 4 scenarios differ over the ice sheet?}
+
+    \revpoint{Figure 3 shows the relative errors and shows huge errors over the interior of the ice sheet. This is misleading because the PDD sums are tiny over the interior and relative errors are rather meaningless. Maybe areas below a PDD threshold can be masked out? Fig. 2 shows the absolute errors which do not say much if the absolute number of PDD is not known. I assume Fig. 3 is meant to put Fig.2 into perspective but fails to do so because of the inclusion of regions that are not relevant.}
+
+\end{enumerate}
+
+% ----------------------------------------------------------------------
+
+\textbf{Specific comments}
+
+\begin{enumerate}[resume]
+
+    \revpoint{Abstract is missing?}
+
+    No need for an abstract in a Correspondence (Chief Editor).
+
+    \revpoint{Introduction, Line 7: DD models have not been ‘invented’ by Braithwaite (1984) but decades, if not a century earlier. Braithwaite can be credited for ‘reviving’ this approach and investigating it in detail. Earlier applications / references are given in Braithwaite’s papers and the DD model review paper by Hock (2003).}
+
+    \revpoint{Line 9: ‘daily’: equation 1 is general; remove daily. PDDsums have been computed with any time resolution (e.g. based on hourly data).}
+
+    \revpoint{Line 9: ‘typically a year’. Again, this holds for the typical use in ice-sheet modeling but certainly not for other modeling (e.g. hydrological modeling).}
+
+    \revpoint{Line 10: This effect may have been ‘recognized’ by Braithwaite (1984) but it has been discussed extensively in the literature much earlier, e.g. by Arnold and McKay (1964).}
+
+    \revpoint{Fig. 1 caption: Probably easier to understand if reworded: “Spatial distribution of standard deviation of daily mean surface air temperatures for January (top) and July (bottom) based on ERA ....”}
+
+    \revpoint{Line 23: daily means were stacked; can this be formulated clearer?}
+
+    \revpoint{Line 33: Do you mean: “Furthermore, annual PDDs were computed over the period XXX to XXX using 4 ...”}
+
+    \revpoint{It is unclear how you compute the mean for the period? I assume you compute the scenarios for each year?}
+
+    \revpoint{Line 35: why 5?}
+
+    \revpoint{Lines 39 ff: add for each description which scenario it is in brackets}
+
+    \revpoint{Line 47: the stand. Dev. does not affect the accuracy per se, only if a Calov/Greve approach is taken (Again, statements are formulated far too general, although they refer to a special, restricted case within the huge spectrum of DD modeling found in the literature. Same issue applies to next statement (Lines 47- 49): again, this only holds with Calov/Greve approach is taken, but not, for example, if time series of daily (or even hourly) data are available.}
+
+\end{enumerate}
+
+% ----------------------------------------------------------------------
+
+\textrev{Overall, I think the paper can be a useful contribution if (a) the (restricted) scope is made clear (ice sheet-modeling with Calov/Greve approach), (b) results are shown for the domain of interest (Greenland ice sheet) and (c) possibly if the effect on results are shown. The paper could also benefit from a brief explanation in the beginning why the variability matters.}
+
+\closing{Best regards,}
+
+\end{letter}
+\end{document}
