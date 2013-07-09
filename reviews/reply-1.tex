@@ -11,12 +11,13 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 \usepackage{enumitem}
+\usepackage{letterbib}
 
 \newcommand{\rev}[0]{\color{blue!50!black}\it}
 \newcommand{\textrev}[1]{{\rev``#1''}}
-\newcommand{\revpoint}[1]{{\rev\item``#1''}}
-\newcommand{\todo}[1]{\textcolor{red!50!black}{Todo: #1}}
-\newcommand{\done}[1]{\textcolor{green!50!black}{Done: #1}}
+\newcommand{\revpoint}[1]{{\rev\item``#1''}\\}
+\newcommand{\todo}[1]{\textcolor{red!50!black}{Todo: #1}\\}
+\newcommand{\done}[1]{\textcolor{green!50!black}{Done: #1}\\}
 
 % ----------------------------------------------------------------------
 
@@ -35,11 +36,7 @@
 
     \revpoint{The author appears to have little knowledge of the vast literature of degree-day modeling. The paper is exclusively focused on ice-sheet modeling using of the Calov and Greve 2005 formulation. This in itself is not a problem, however, nowhere in the paper is that made clear. Degree-day models are used in many disciplines and in many different ways using data input of various time resolution (see review Hock, 2003), however, as written, it appears as if the only way degree-day models are applied is annual integrals of positive temperatures with superimposed daily variability based on a (constant) standard deviation. The paper should cite relevant literature and make clear (preferably also in the title) that the paper focuses on ice sheet modeling and the Calov and Greve 2005 formulation, basically testing its validity and applicability, since obviously the ice sheet community is not considering seasonal variability yet (?). In fact such variability has been included in other DD applications (see papers by Huss on glacier runoff simulations from the Alps).}
 
-    My reply.
-
-    \todo{Change the title}
-
-    \done{Title changed}
+    As I use PDD models only within the frame of glacier modelling, I have to admit my lack of knowledge of the literature available for other applications. Indeed with this paper, I mean to point out an issue specific to PDD models applied to annual cycle representations of temperature evolution such as typically used in numerical glacier modelling, when daily or hourly measurements are not available. To make this clear in the paper, I have updated the title and rephrased parts of the introduction. Since the Correspondence format is, I assume, too short to include all relevant literature on PDD models, I have added a reference to the review by \citet{hock-2003}.
 
     \revpoint{The author shows the large spatial and seasonal variability of daily mean temperatures. This in itself is not really anything new but obvious from direct observations and gridded climate products and has been well documented in the literature. Though possibly beyond the scope of the paper, it would be more interesting to show (in addition to the effect on PDD) what the effect of this known variability is on the surface mass balance results in ice-sheet modeling.}
 
@@ -57,15 +54,23 @@
 
     \revpoint{Abstract is missing?}
 
-    No need for an abstract in a Correspondence (Chief Editor).
+    No need for an abstract in a Correspondence (note from Chief Editor).
 
     \revpoint{Introduction, Line 7: DD models have not been ‘invented’ by Braithwaite (1984) but decades, if not a century earlier. Braithwaite can be credited for ‘reviving’ this approach and investigating it in detail. Earlier applications / references are given in Braithwaite’s papers and the DD model review paper by Hock (2003).}
 
+    Corrected.
+
     \revpoint{Line 9: ‘daily’: equation 1 is general; remove daily. PDDsums have been computed with any time resolution (e.g. based on hourly data).}
+
+    Removed `daily'.
 
     \revpoint{Line 9: ‘typically a year’. Again, this holds for the typical use in ice-sheet modeling but certainly not for other modeling (e.g. hydrological modeling).}
 
+    Corrected.
+
     \revpoint{Line 10: This effect may have been ‘recognized’ by Braithwaite (1984) but it has been discussed extensively in the literature much earlier, e.g. by Arnold and McKay (1964).}
+
+    Added reference to \citet{arnold-mckay-1964}.
 
     \revpoint{Fig. 1 caption: Probably easier to understand if reworded: “Spatial distribution of standard deviation of daily mean surface air temperatures for January (top) and July (bottom) based on ERA ....”}
 
@@ -86,6 +91,10 @@
 % ----------------------------------------------------------------------
 
 \textrev{Overall, I think the paper can be a useful contribution if (a) the (restricted) scope is made clear (ice sheet-modeling with Calov/Greve approach), (b) results are shown for the domain of interest (Greenland ice sheet) and (c) possibly if the effect on results are shown. The paper could also benefit from a brief explanation in the beginning why the variability matters.}
+
+\textbf{References}
+\bibliography{../references}
+\bibliographystyle{igs}
 
 \closing{Best regards,}
 

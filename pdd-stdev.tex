@@ -9,7 +9,7 @@
 
 \begin{document}
 
-\title[Temperature variability in a positive degree day model]{Spatial and seasonal effects of temperature variability in a positive degree day surface melt model}
+\title[Temperature variability in a positive degree day model]{Spatial and seasonal effects of temperature variability in an annual positive degree day glacier surface melt model}
 \author[J. Seguinot]{Julien Seguinot}
 \affiliation{Department of Physical Geography and Quaternary Geology, Stockholm University, S-106 91 Stockholm, Sweden}
 
@@ -19,13 +19,13 @@
 
 \section{Introduction}
 
-The positive degree day model is a parametrization of surface melt introduced by \citet{braithwaite-1984} and widely used in glacier modelling. Melt is assumed to be proportional to the number of Positive Degree Days (PDD), defined as the integral of positive, daily mean Celcius temperature $T$ over a time interval $A$, typically a year,
+The positive degree day model is a parametrization of surface melt widely used for its simplicity \citep{hock-2003}. Melt is assumed to be proportional to the number of Positive Degree Days (PDD), defined as the integral of positive Celcius temperature $T$ over a time interval $A$,
 
 \begin{equation} \label{eq:pdd}
   \mathrm{PDD} = \int_{0}^{A}\max(T(t),0)\,dt.
 \end{equation}
 
-The effect of day-to-day variations of temperature on surface melt was recognized by \citet{braithwaite-1984} and later modelled by \citet{reeh-1991}, who assumed a normal probability distribution of $T$ around its annual cycle $T_{ac}$ and rewrote the PDD as
+In numerical glacier modelling on the multi-millennium time-scale of palaeo-ice sheet reconstruction or spin-up simulations, daily or hourly temperature data is usually not available and PDD are typically integrated over one year using an average annual temperature cycle. Sub-annual temperature variability around the freezing point, however, significantly affects surface melt on a multi-year scale \citep{arnold-mackay-1964}. It is commonly included in the models by assuming a normal probability distribution of $T$ of known standard deviation $\sigma$ around the annual cycle $T_{ac}$ \citep{braithwaite-1984}. PDDs can then be computed using a double-integral formulation of \citet{reeh-1991},
 
 \begin{equation} \label{eq:reeh}
   \mathrm{PDD} = \frac{1}{\sigma\sqrt{2\pi}}
@@ -34,7 +34,7 @@ The effect of day-to-day variations of temperature on surface melt was recognize
     T \exp\left({-\frac{(T-T_{ac}(t))^2}{2\sigma^2}}\right),
 \end{equation}
 
-where $\sigma$ is the standard deviation of the temperature distribution. More recently, \citet{calov-greve-2005} reformulated this equation to provide a more computationally-efficient expression for use in numerical glacier models,
+or more efficiently using an error function formulation of \citet{calov-greve-2005},
 
 \begin{equation} \label{eq:calovgreve}
   \mathrm{PDD} = \int_{0}^{A} \left[
@@ -45,7 +45,7 @@ where $\sigma$ is the standard deviation of the temperature distribution. More r
   \right]dt.
 \end{equation}
 
-The normal distribution approach has been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,seddik-etal-2012,charbit-etal-2013}. However, $\sigma$ is often assumed constant in time and space, despite being a major constraint on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on the PDD computation.
+These approaches have been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,seddik-etal-2012,charbit-etal-2013}. However, $\sigma$ is often assumed constant in time and space, despite its large influence on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on the PDD computation.
 
 % ----------------------------------------------------------------------
 
