@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 import cartopy.crs as ccrs
 import iris
@@ -42,11 +43,25 @@ def stdev():
     cb.set_label('Standard deviation of surface air temperature (K)')
     fig.savefig('stdev' + fmt)
 
-def diff(isrelative=False):
+def diff(varname, region, isrelative=False):
+
+    # prepare projection and bounds
+    resolution = '110m'
+    xlim = (-5e6, 5e6)
+    ylim = (-5e6, 5e6)
+    if region == 'global':
+      proj = ccrs.PlateCarree()
+    if region == 'arctic':
+      proj = ccrs.NorthPolarStereo()
+    if region == 'antarctic':
+      proj = ccrs.SouthPolarStereo()
+    if region == 'greenland':
+      proj = ccrs.NorthPolarStereo()
+      resolution = '50m'
+      xlim = (-2600e3, -100e3)
+      ylim = (-2600e3, -100e3)
 
     # prepare figure grid
-    nproj = ccrs.NorthPolarStereo()
-    sproj = ccrs.SouthPolarStereo()
     mapw, maph = 40*mm, 40*mm
     figw = 2*mapw + 3*pad
     figh = 2*maph + 3*pad + cbh + bot
@@ -58,47 +73,64 @@ def diff(isrelative=False):
     axw = mapw/figw
     axh = maph/figh
     grid = [
-      plt.axes([axx1, axy1, axw, axh], projection=nproj),
-      plt.axes([axx2, axy1, axw, axh], projection=nproj),
-      plt.axes([axx1, axy2, axw, axh], projection=nproj),
-      plt.axes([axx2, axy2, axw, axh], projection=nproj)]
+      plt.axes([axx1, axy1, axw, axh], projection=proj),
+      plt.axes([axx2, axy1, axw, axh], projection=proj),
+      plt.axes([axx1, axy2, axw, axh], projection=proj),
+      plt.axes([axx2, axy2, axw, axh], projection=proj)]
     cax = plt.axes([pad/figw, bot/figh, 1-2*pad/figw, cbh/figh])
 
-    # plot data
+    # load data
     basename = ('r' if isrelative else 'a') + 'diff'
     filename = basename + '-%s.nc'
-    data = [iris.load(filename % s)[1] for s in ['s0', 's5', 'avg', 'jja']]
-    cases = ['0', '5', 'ANN', 'JJA']
+    cubenum = (4 if varname == 'smb' else 1)
+    data = [iris.load(filename % s)[cubenum] for s in ['s0', 's5', 'avg', 'jja']]
+
+    # pick colormap
     if isrelative:
       levs = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
       cmap = plt.cm.YlGnBu
       cmap.set_under('w')
       cmap.set_over('k')
-      norm = mcolors.BoundaryNorm(levs, 256, clip=True)
+    elif varname == 'smb':
+      levs = [i*0.25 for i in range(-6,7)]
+      cmap = plt.cm.RdBu
     else:
       levs = [i*50 for i in range(-6,7)]
       cmap = plt.cm.RdBu_r
-      norm = mcolors.BoundaryNorm(levs, 256, clip=True)
+    norm = mcolors.BoundaryNorm(levs, 256, clip=True)
+
+    # plot and add labels
+    cases = ['0', '5', 'ANN', 'JJA']
     for i, ax in enumerate(grid):
-      ax.set_xlim((-5e6, 5e6))
-      ax.set_ylim((-5e6, 5e6))
+      if region != 'global':
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
       plt.sca(ax)
       cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both')
       iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid')
-      iplt.citation('$%s_\mathrm{%s}$' % ('r' if isrelative else 'd', cases[i]))
-      ax.coastlines()
+      iplt.citation('$%s\mathrm{%s}_\mathrm{%s}$'
+        % ('\delta' if isrelative else '\Delta', varname.upper(), cases[i]))
+      ax.coastlines(resolution=resolution)
 
     # add colorbar and save
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
-    if isrelative:
-      cb.set_label('Relative PDD error')
+    if varname == 'smb':
+      longvarname = 'surface mass balance'
+      unit = 'm yr$\mathsf{^{-1}}$'
     else:
-      cb.set_label('Absolute PDD error (K day)')
-    fig.savefig(basename + '.' + fmt)
+      longvarname = 'PDD'
+      unit = u'°C day'
+    if isrelative:
+      cb.set_label('Relative %s error' % longvarname)
+    else:
+      cb.set_label('Absolute %s error (%s)' % (longvarname, unit))
+    fig.savefig('%s-%s-%s.%s' % (varname, basename, region, fmt))
 
 if __name__ == '__main__':
 
     #stdev()
-    diff(isrelative=False)
-    diff(isrelative=True)
+    for varname in ['pdd', 'smb']:
+      for region in ['global', 'arctic', 'antarctic', 'greenland']:
+        diff(varname, region, False)
+        diff(varname, region, True)
 
