@@ -19,7 +19,7 @@ for f in std*.nc; do
 done
 
 # run pdd model
-pypdd_path=$HOME/work/code/python/pypdd
+pypdd_path=$HOME/code/pypdd
 pypdd_args="-b --pdd-refreeze 0"
 $pypdd_path/pypdd.py $pypdd_args -i atm.nc -o smb.nc
 $pypdd_path/pypdd.py $pypdd_args -i atm.nc -o smb-s0.nc --pdd-std-dev 0
@@ -30,6 +30,6 @@ $pypdd_path/pypdd.py $pypdd_args -i atm-jja.nc -o smb-jja.nc
 # compute differences
 for f in smb-*.nc; do
   cdo -O sub $f smb.nc ${f/smb/adiff}
-  cdo -O abs -div ${f/smb/adiff} smb.nc ${f/smb/rdiff}
+  cdo -O div ${f/smb/adiff} -abs smb.nc ${f/smb/rdiff}
 done
 

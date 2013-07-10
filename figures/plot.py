@@ -87,10 +87,8 @@ def diff(varname, region, isrelative=False):
 
     # pick colormap
     if isrelative:
-      levs = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
-      cmap = plt.cm.YlGnBu
-      cmap.set_under('w')
-      cmap.set_over('k')
+      levs = [-100, -30, -10, -3, -1, -0.3, -0.1, -0.03, -0.01, 0, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
+      cmap = plt.cm.RdBu
     elif varname == 'smb':
       levs = [i*0.25 for i in range(-6,7)]
       cmap = plt.cm.RdBu
@@ -133,4 +131,3 @@ if __name__ == '__main__':
       for region in ['global', 'arctic', 'antarctic', 'greenland']:
         diff(varname, region, False)
         diff(varname, region, True)
-
