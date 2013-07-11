@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import iris
 import iris.plot as iplt
 from matplotlib import colors as mcolors
@@ -46,7 +47,6 @@ def stdev():
 def diff(varname, region, isrelative=False):
 
     # prepare projection and bounds
-    resolution = '110m'
     xlim = (-5e6, 5e6)
     ylim = (-5e6, 5e6)
     if region == 'global':
@@ -57,9 +57,8 @@ def diff(varname, region, isrelative=False):
       proj = ccrs.SouthPolarStereo()
     if region == 'greenland':
       proj = ccrs.NorthPolarStereo()
-      resolution = '50m'
-      xlim = (-2600e3, -100e3)
-      ylim = (-2600e3, -100e3)
+      xlim = (-3e6, 0)
+      ylim = (-3e6, 0)
 
     # prepare figure grid
     mapw, maph = 40*mm, 40*mm
@@ -87,7 +86,7 @@ def diff(varname, region, isrelative=False):
 
     # pick colormap
     if isrelative:
-      levs = [-100, -30, -10, -3, -1, -0.3, -0.1, -0.03, -0.01, 0, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
+      levs = [-10, -3, -1, -0.3, -0.1, -0.03, 0, 0.03, 0.1, 0.3, 1, 3, 10]
       cmap = plt.cm.RdBu
     elif varname == 'smb':
       levs = [i*0.25 for i in range(-6,7)]
@@ -99,16 +98,22 @@ def diff(varname, region, isrelative=False):
 
     # plot and add labels
     cases = ['0', '5', 'ANN', 'JJA']
+    ocean = cfeature.NaturalEarthFeature('physical', 'ocean', '50m',
+      edgecolor = 'black',
+      facecolor = 'white')
     for i, ax in enumerate(grid):
       if region != 'global':
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
       plt.sca(ax)
-      cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both')
-      iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid')
+      cs = iplt.contourf(data[i], levs, cmap=cmap, norm=norm, extend='both', zorder=0)
+      iplt.contour(data[i], levs, colors='k', linewidths=0.2, linestyles='solid', zorder=1)
       iplt.citation('$%s\mathrm{%s}_\mathrm{%s}$'
         % ('\delta' if isrelative else '\Delta', varname.upper(), cases[i]))
-      ax.coastlines(resolution=resolution)
+      if region=='greenland':
+        ax.add_feature(ocean, zorder=2)
+      else:
+        ax.coastlines()
 
     # add colorbar and save
     cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
@@ -128,6 +133,7 @@ if __name__ == '__main__':
 
     #stdev()
     for varname in ['pdd', 'smb']:
-      for region in ['global', 'arctic', 'antarctic', 'greenland']:
+      #for region in ['global', 'arctic', 'antarctic', 'greenland']:
+        region='greenland'
         diff(varname, region, False)
         diff(varname, region, True)
