@@ -51,21 +51,15 @@ These approaches have been implemented and used in several glacier models \citep
 
 \section{Temperature variability}
 
-The monthly standard deviation of daily mean temperature was computed from the ERA-Interim reanalysis \citep{data:erai} data using the following algorithm:
-
-\begin{enumerate}
-  \item daily means of surface air temperature were computed as averages of the four daily analysis time steps (00:00, 06:00, 12:00, 18:00);
-  \item daily means were stacked by month over a 24-year (1979--2012) time interval;
-  \item twelve monthly standard deviation grids were computed from the stacked daily means.
-\end{enumerate}
+Using the ERA-Interim reanalysis data \citep{data:erai} for the 24-year period 1979--2012, a monthly climatology was prepared, consisting of long-term monthly mean surface air temperature, long-term mean monthly precipitation and long-term monthly standard deviation of daily mean surface air temperature. Standard deviation was calculated over the whole period and relative to the long-term monthly mean in order to capture both day-to-day and year-to-year variations of surface air temperature. However daily mean surface air temperature was computed beforehand as an average of the four daily analysis time steps (00:00, 06:00, 12:00, 18:00), to remove variability associated with the diurnal cycle.
 
 \begin{figure}
   \centering\includegraphics{stdev}
-  \caption{January (top) and July (bottom) distributions of monthly standard deviation of daily mean surface air temperature from the ERA-Interim reanalysis \citep{data:erai} data for the period 1979--2012. The maps show higher values in winter and over continental regions.}
+  \caption{Spatial distributions of standards deviation of daily mean surface air temperature for January (top) and July (bottom) based on the ERA-Interim reanalysis \citep{data:erai} data for the. The maps show higher values in winter and over continental regions.}
   \label{fig:stdev}
 \end{figure}
 
-This approach captures the day-to-day and year-to-year variations of surface air temperature. However, the annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard devations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. As shown in Figure~\ref{fig:stdev}, there is a tendency for higher values over continental regions and in winter.
+The annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard deviations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. As shown in Figure~\ref{fig:stdev}, there is a tendency for higher values over continental regions and in winter.
 
 % ----------------------------------------------------------------------
 
