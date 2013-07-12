@@ -88,13 +88,18 @@ def diff(varname, region, isrelative=False):
     if isrelative:
       levs = [-10, -3, -1, -0.3, -0.1, -0.03, 0, 0.03, 0.1, 0.3, 1, 3, 10]
       cmap = plt.cm.RdBu
+      norm = mcolors.BoundaryNorm(levs, 256)
+      format = '%g'
     elif varname == 'smb':
-      levs = [i*0.25 for i in range(-6,7)]
+      levs = [i*0.25 for i in range(-4,5)]
       cmap = plt.cm.RdBu
+      norm = None
+      format = mticker.FuncFormatter(lambda x, pos: '%g' % (x*1000))
     else:
-      levs = [i*50 for i in range(-6,7)]
+      levs = [i*50 for i in range(-4,5)]
       cmap = plt.cm.RdBu_r
-    norm = mcolors.BoundaryNorm(levs, 256, clip=True)
+      norm = None
+      format = '%g'
 
     # plot and add labels
     cases = ['0', '5', 'ANN', 'JJA']
@@ -115,25 +120,30 @@ def diff(varname, region, isrelative=False):
       else:
         ax.coastlines()
 
-    # add colorbar and save
-    cb = plt.colorbar(cs, cax, orientation='horizontal', format='%g')
+    # add colorbar
+    cb = plt.colorbar(cs, cax, orientation='horizontal', format=format)
     if varname == 'smb':
-      longvarname = 'surface mass balance'
-      unit = 'm yr$\mathsf{^{-1}}$'
+      longvarname = 'Surface mass balance'
+      unit = 'mm yr$\mathsf{^{-1}}$'
     else:
-      longvarname = 'PDD'
+      longvarname = 'Positive degree day'
       unit = u'°C day'
     if isrelative:
-      cb.set_label('Relative %s error' % longvarname)
+      cb.set_label('%s relative error' % longvarname)
     else:
-      cb.set_label('Absolute %s error (%s)' % (longvarname, unit))
-    fig.savefig('%s-%s-%s.%s' % (varname, basename, region, fmt))
+      cb.set_label('%s error (%s)' % (longvarname, unit))
+
+    # save
+    output = '%s-%s-%s.%s' % (varname, basename, region, fmt)
+    print 'saving %s' % output
+    fig.savefig(output)
 
 if __name__ == '__main__':
 
     #stdev()
     for varname in ['pdd', 'smb']:
-      #for region in ['global', 'arctic', 'antarctic', 'greenland']:
-        region='greenland'
+      for region in ['global', 'arctic', 'antarctic', 'greenland']:
         diff(varname, region, False)
         diff(varname, region, True)
+    #diff('pdd', 'arctic')
+    #diff('smb', 'greenland')
