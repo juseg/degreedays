@@ -48,7 +48,7 @@ or more efficiently using an error function formulation of \citet{calov-greve-20
   \right]dt.
 \end{equation}
 
-These approaches have been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013}. However, with the exception of an available parametrization for the Greeland Ice Sheet \citep{fausto-etal-2011}, $\sigma$ is often assumed constant in time and space, despite its large influence on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on PDD and Surface Mass Balance (SMB) computation.
+These approaches have been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013}. However, with the exception of an available parametrization for the Greenland Ice Sheet \citep{fausto-etal-2011}, $\sigma$ is often assumed constant in time and space, despite its large influence on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on PDD and Surface Mass Balance (SMB) computation.
 
 % ----------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ Using the ERA-Interim reanalysis data \citep{data:erai} for the period 1979--201
   \label{fig:stdev}
 \end{figure}
 
-The annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard deviations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. There is a tendency for higher values over continental regions and in winter (Figure~\ref{fig:stdev}).
+The annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard deviations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. There is a tendency for higher values over continental regions (Figure~\ref{fig:stdev}). Additionally, computed standard deviation values exhibit an annual cycle with a winter high and a summer low. This generalises results obtained by \citet{fausto-etal-2011} over Greenland to non-glaciated regions, where summer temperatures are not constrained by 0 $^\circ$C by an ice surface.
 
 % ----------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ All four scenarios lead to significant errors in PDD estimates when applied on a
 
 \section{Surface mass balance}
 
-For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu/pypdd) over Greenland. Accumulation was assumed equal to precipitation when temperature is below 0\,\degC, and decreasing linearly with temperature between 0 and 2\,\degC. Melt was computed using degree day factors of 3\ddfunit for snow and 8\ddfunit for ice. Surface mass-balance was computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).  
+For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu/pypdd) over Greenland. Accumulation was assumed equal to precipitation when temperature is below 0\,\degC, and decreasing linearly with temperature between 0 and 2\,\degC. Melt was computed using degree day factors of 3\ddfunit for snow and 8\ddfunit for ice. Surface mass-balance was computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).
 
 \begin{figure}
   \centering\includegraphics{smb-adiff-greenland}
@@ -97,13 +97,13 @@ For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu
   \label{fig:smb}
 \end{figure}
 
-Using summer mean standard deviation in the SMB calculation ($\rm SMB_{JJA}$) gave smaller errors than other simplifying scenarios (Figure~\ref{fig:smb}), confirming recent results by \citet{rau-rogozhina-2013}. However in all four cases, large SMB errors occurred along the margin where most of the melt processes take place.
+Using summer mean standard deviation in the SMB calculation ($\rm SMB_{JJA}$) gave smaller errors than other simplifying scenarios (Figure~\ref{fig:smb}). This confirms recent results obtained by \citet{rau-rogozhina-2013} from the ERA-40 reanalysis data. However in all four cases, large SMB errors occurred along the margin where most of the melt processes take place.
 
 % ----------------------------------------------------------------------
 
 \section{Conclusion}
 
-Using gridded climate products, temperature variability can be assessed quantitatively at the continental scale. The standard deviation of daily mean temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy of annual PDD and SMB as estimated by the \citet{calov-greve-2005} or the equivalent \citet{reeh-1991} formulation. Numerical glacier models that use an annual PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface temperature in order to more realistically capture patterns of surface melt.
+Using gridded climate products, temperature variability can be assessed quantitatively at the continental scale. When using standard deviation PDD formulations \citep{braithwaite-1984,reeh-1991,calov-greve-2005}, the standard deviation of daily mean surface air temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy of annual PDD and glacier SMB estimations. Numerical glacier models that use an annual PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface air temperature in order to more realistically capture patterns of surface melt.
 
 % ----------------------------------------------------------------------
 
