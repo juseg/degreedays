@@ -91,9 +91,9 @@ def diff(varname, region, isrelative=False):
       norm = mcolors.BoundaryNorm(levs, 256)
       format = '%g'
     elif varname == 'smb':
-      levs = [i*0.25 for i in range(-4,5)]
+      levs = [-1, -0.3, -0.1, -0.03, -0.01, -0.003, 0, 0.003, 0.01, 0.03, 0.1, 0.3, 1]
       cmap = plt.cm.RdBu
-      norm = None
+      norm = mcolors.BoundaryNorm(levs, 256)
       format = mticker.FuncFormatter(lambda x, pos: '%g' % (x*1000))
     else:
       levs = [i*50 for i in range(-4,5)]
