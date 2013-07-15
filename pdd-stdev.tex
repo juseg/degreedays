@@ -48,7 +48,7 @@ or more efficiently using an error function formulation of \citet{calov-greve-20
   \right]dt.
 \end{equation}
 
-These approaches have been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,seddik-etal-2012,charbit-etal-2013}. However, with the exception of an available parametrization for the Greeland Ice Sheet \citep{fausto-etal-2011}, $\sigma$ is often assumed constant in time and space, despite its large influence on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on PDD and Surface Mass Balance (SMB) computation.
+These approaches have been implemented and used in several glacier models \citep[e.g.][]{letreguilly-etal-1991,greve-1997,huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013}. However, with the exception of an available parametrization for the Greeland Ice Sheet \citep{fausto-etal-2011}, $\sigma$ is often assumed constant in time and space, despite its large influence on modelled surface melt and subsequent ice sheet geometries \citep{charbit-etal-2013}. Here I show that $\sigma$ is in fact highly variable spatially and seasonally, which has significant effects on PDD and Surface Mass Balance (SMB) computation.
 
 % ----------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, was computed using
 
 \begin{enumerate}
   \item using equation~\ref{eq:pdd} ($\rm PDD_0$);
-  \item using equation~\ref{eq:calovgreve} with $\sigma=5\,K$ ($\rm PDD_5$);
+  \item using equation~\ref{eq:calovgreve} with $\sigma=5\,K$, a common value in ice-sheet modelling \citep{huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013} ($\rm PDD_5$);
   \item using an annual mean of standard deviation ($\rm PDD_{ANN}$);
   \item using a boreal summer (JJA) mean of standard deviation ($\rm PDD_{JJA}$).
 \end{enumerate}
@@ -83,7 +83,7 @@ A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, was computed using
   \label{fig:pdd}
 \end{figure}
 
-All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figure~\ref{fig:pdd}). Assuming zero temperature variability generally underestimated PDD values. Assuming $\sigma=5\,K$ reduced errors in continental northern America and Eurasia but overestimated PDD values in coastal locations and over the Greenland ice sheet. Using annual mean or summer mean standard deviation generally yielded smaller, yet significant errors.
+All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figure~\ref{fig:pdd}). Assuming zero temperature variability ($\rm PDD_0$) generally underestimated PDD values. Assuming $\sigma=5\,K$ ($\rm PDD_5$) reduced errors in continental northern America and Eurasia but overestimated PDD values in coastal locations and over the Greenland ice sheet. Using annual mean ($\rm PDD_{ANN}$) or summer mean ($\rm PDD_{JJA}$) standard deviation generally yielded smaller, yet significant errors.
 
 % ----------------------------------------------------------------------
 
@@ -97,13 +97,13 @@ For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu
   \label{fig:smb}
 \end{figure}
 
-Using summer mean standard deviation in the SMB calculation gave smaller errors than other simplifying scenarios (Figure~\ref{fig:smb}), confirming recent results by \citet{rau-rogozhina-2013}. However in all four cases, large SMB errors occurred along the margin where most of the melt processes take place.
+Using summer mean standard deviation in the SMB calculation ($\rm SMB_{JJA}$) gave smaller errors than other simplifying scenarios (Figure~\ref{fig:smb}), confirming recent results by \citet{rau-rogozhina-2013}. However in all four cases, large SMB errors occurred along the margin where most of the melt processes take place.
 
 % ----------------------------------------------------------------------
 
 \section{Conclusion}
 
-Using gridded climate products, temperature variability can be assessed quantitatively at the continental scale. The standard deviation of daily mean temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy of annual PDD and SMB estimations. Numerical glacier models that use an annual PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface temperature in order to more realistically capture patterns of surface melt.
+Using gridded climate products, temperature variability can be assessed quantitatively at the continental scale. The standard deviation of daily mean temperatures is highly variable both spatially and seasonally, and this variability significantly affects the accuracy of annual PDD and SMB as estimated by the \citet{calov-greve-2005} or the equivalent \citet{reeh-1991} formulation. Numerical glacier models that use an annual PDD scheme should implement spatially and seasonally variable standard deviations of mean daily surface temperature in order to more realistically capture patterns of surface melt.
 
 % ----------------------------------------------------------------------
 
