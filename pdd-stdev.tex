@@ -6,13 +6,13 @@
 \graphicspath{{figures/}}
 
 \newcommand{\degC}{\,\ensuremath{\rm^\circ C}}
-\newcommand{\ddfunit}{\,\ensuremath{\rm mm\,^\circ C^{-1}\,day^{-1}}}
+\newcommand{\ddfunit}{\,\ensuremath{\rm mm\,^\circ C^{-1}\,day^{-1}\,}}
 
 % ----------------------------------------------------------------------
 
 \begin{document}
 
-\title[Temperature variability in a positive degree day model]{Spatial and seasonal effects of temperature variability in an annual positive degree day glacier surface mass-balance model}
+\title[Temperature variability in a positive degree day model]{Spatial and seasonal effects of temperature variability in a positive degree day glacier surface mass balance model}
 \author[J. Seguinot]{Julien Seguinot}
 \affiliation{Department of Physical Geography and Quaternary Geology, Stockholm University, S-106 91 Stockholm, Sweden}
 
@@ -28,7 +28,7 @@ The positive degree day model is a parametrization of surface melt widely used f
   \mathrm{PDD} = \int_{0}^{A}\max(T(t),0)\,dt.
 \end{equation}
 
-When modelling glaciers on the multi-millennium time-scale needed for palaeo-ice sheet reconstruction or spin-up simulations, daily or hourly temperature data is usually not available and PDD are typically calculated over one year using an average annual temperature cycle. Sub-annual temperature variability around the freezing point, however, significantly affects surface melt on a multi-year scale \citep{arnold-mackay-1964}. It is commonly included in the models by assuming a normal probability distribution of $T$ of known standard deviation $\sigma$ around the annual cycle $T_{ac}$ \citep{braithwaite-1984}. PDDs can then be computed using a double-integral formulation of \citet{reeh-1991},
+When modelling glaciers on the multi-millennium time-scale needed for palaeo-ice sheet reconstruction or spin-up simulations \citep[e.g.][]{charbit-etal-2013}, daily or hourly temperature data is usually not available and PDD are typically calculated over one year using an average annual temperature cycle. Sub-annual temperature variability around the freezing point, however, significantly affects surface melt on a multi-year scale \citep{arnold-mackay-1964}. It is commonly included in models by assuming a normal probability distribution of $T$ of known standard deviation $\sigma$ around the annual cycle $T_{ac}$ \citep{braithwaite-1984}. PDDs can then be computed using a double-integral formulation of \citet{reeh-1991},
 
 \begin{equation} \label{eq:reeh}
   \mathrm{PDD} = \frac{1}{\sigma\sqrt{2\pi}}
@@ -54,42 +54,42 @@ These approaches have been implemented and used in several glacier models \citep
 
 \section{Temperature variability}
 
-Using the ERA-Interim reanalysis data \citep{data:erai} for the period 1979--2012, a monthly climatology was prepared, consisting of long-term monthly mean surface air temperature, long-term mean monthly precipitation and long-term monthly standard deviation of daily mean surface air temperature. Standard deviation was calculated over the whole period, relative to the long-term monthly mean, in order to capture both day-to-day and year-to-year variations of surface air temperature. However daily mean surface air temperature was computed beforehand as an average of the four daily analysis time steps (00:00, 06:00, 12:00, 18:00), to avoid variability associated with the diurnal cycle.
+Using the ERA-Interim reanalysis data \citep{data:erai} for the period 1979--2012, a monthly climatology is prepared, consisting of long-term monthly mean surface air temperature, long-term mean monthly precipitation and long-term monthly standard deviation of daily mean surface air temperature. Temperature standard deviation is calculated using temperature deviations relative to the long-term monthly mean for the entire period, in order to capture both day-to-day and year-to-year variations of surface air temperature. Daily mean surface air temperature is computed beforehand as an average of the four daily analysis time steps (00:00, 06:00, 12:00, 18:00), to avoid variability associated with the diurnal cycle.
 
 \begin{figure}
   \centering\includegraphics{stdev}
-  \caption{Spatial distributions of standard deviation of daily mean surface air temperature for January (top) and July (bottom) based on the ERA-Interim reanalysis \citep{data:erai} data for the period 1979--2012. The maps show higher values in winter and over continental regions.}
+  \caption{Spatial distributions of standard deviation of daily mean surface air temperature for January (top) and July (bottom) based on the ERA-Interim reanalysis data for the period 1979--2012. The maps show higher values in winter and over continental regions \citep{data:erai}.}
   \label{fig:stdev}
 \end{figure}
 
-The annual temperature cycle has not been removed from the time-series, which may have lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard deviations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. There is a tendency for higher values over continental regions (Figure~\ref{fig:stdev}). Additionally, computed standard deviation values exhibit an annual cycle with a winter high and a summer low. This generalises results obtained by \citet{fausto-etal-2011} over Greenland to non-glaciated regions, where summer temperatures are not constrained by 0 $^\circ$C by an ice surface.
+The annual temperature cycle is not removed from the time-series, which may lead to slightly overestimated values in spring and autumn when temperature varies significantly between the beginning and the end of a month. Computed standard deviations range from 0.32 to 12.63\,K, with a global annual average of 2.02\,K. There is a tendency for higher values over continental regions (Figure~\ref{fig:stdev}). Additionally, computed standard deviation values exhibit an annual cycle with a winter high and a summer low. This extends the conclusions obtained by \citet{fausto-etal-2011} over Greenland to non-glaciated regions, where summer temperatures are not constrained by 0 $^\circ$C by an ice surface.
 
 % ----------------------------------------------------------------------
 
 \section{Positive degree days}
 
-A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, was computed using equation~\ref{eq:calovgreve} and the monthly climatology described above. Furthermore, annual PDDs were computed in four additional, simplifying scenarios:
+A reference PDD distribution, hereafter $\mathrm{PDD_{ERA}}$, is computed using equation~\ref{eq:calovgreve} over one year and the monthly climatology described above. Furthermore, annual PDDs is computed using four additional, simplifying scenarios:
 
 \begin{enumerate}
   \item using equation~\ref{eq:pdd} ($\rm PDD_0$);
-  \item using equation~\ref{eq:calovgreve} with $\sigma=5\,K$, a common value in ice-sheet modelling \citep{huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013} ($\rm PDD_5$);
+  \item using equation~\ref{eq:calovgreve} with $\sigma=5\,K$, a value commonly used in ice-sheet modelling \citep{huybrechts-dewolde-1999,seddik-etal-2012,charbit-etal-2013} ($\rm PDD_5$);
   \item using an annual mean of standard deviation ($\rm PDD_{ANN}$);
   \item using a boreal summer (JJA) mean of standard deviation ($\rm PDD_{JJA}$).
 \end{enumerate}
 
 \begin{figure}
   \centering\includegraphics{pdd-adiff-arctic}
-  \caption{PDD error ($\Delta\mathrm{PDD}_i = \mathrm{PDD}_i - \mathrm{PDD_{ERA}}$) over the Arctic using (a) zero temperature variability, (b) fixed temperature variability ($\sigma=5\,\mathrm{K}$), (c) mean annual temperature variability, (d) mean JJA temperature variability.}
+  \caption{PDD error ($\Delta\mathrm{PDD}_i = \mathrm{PDD}_i - \mathrm{PDD_{ERA}}$) over the Arctic using (a) zero temperature variability, (b) fixed temperature variability ($\sigma=5\,\mathrm{K}$), (c) mean annual temperature variability, (d) mean summer temperature variability.}
   \label{fig:pdd}
 \end{figure}
 
-All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figure~\ref{fig:pdd}). Assuming zero temperature variability ($\rm PDD_0$) generally underestimated PDD values. Assuming $\sigma=5\,K$ ($\rm PDD_5$) reduced errors in continental northern America and Eurasia but overestimated PDD values in coastal locations and over the Greenland ice sheet. Using annual mean ($\rm PDD_{ANN}$) or summer mean ($\rm PDD_{JJA}$) standard deviation generally yielded smaller, yet significant errors.
+All four scenarios lead to significant errors in PDD estimates when applied on a continental scale (Figure~\ref{fig:pdd}). Assuming zero temperature variability ($\rm PDD_0$) generally underestimates PDD values. Assuming $\sigma=5\,K$ ($\rm PDD_5$) reduces errors in continental northern America and Eurasia but overestimates PDD values in coastal locations and over the Greenland ice sheet. Using annual mean ($\rm PDD_{ANN}$) or summer mean ($\rm PDD_{JJA}$) standard deviation generally yields smaller, yet significant errors.
 
 % ----------------------------------------------------------------------
 
 \section{Surface mass balance}
 
-For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu/pypdd) over Greenland. Accumulation was assumed equal to precipitation when temperature is below 0\,\degC, and decreasing linearly with temperature between 0 and 2\,\degC. Melt was computed using degree day factors of 3\ddfunit for snow and 8\ddfunit for ice. Surface mass-balance was computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).
+For each scenario, SMB is computed using a simple annual PDD model (github.com/jsegu/pypdd). Accumulation is assumed equal to precipitation when temperature is below 0\,\degC, and decreasing linearly with temperature between 0 and 2\,\degC. Melt is computed using degree day factors of 3\ddfunit for snow and 8\ddfunit for ice \citep{huybrechts-dewolde-1999}. Surface mass-balance is computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).
 
 \begin{figure}
   \centering\includegraphics{smb-adiff-greenland}
@@ -97,7 +97,7 @@ For each scenario, SMB was computed in simple annual PDD model (github.com/jsegu
   \label{fig:smb}
 \end{figure}
 
-Using summer mean standard deviation in the SMB calculation ($\rm SMB_{JJA}$) gave smaller errors than other simplifying scenarios (Figure~\ref{fig:smb}). This confirms recent results obtained by \citet{rau-rogozhina-2013} from the ERA-40 reanalysis data. However in all four cases, large SMB errors occurred along the margin where most of the melt processes take place.
+Using summer mean standard deviation in the SMB calculation ($\rm SMB_{JJA}$) gives smaller errors than other simplifying scenarios over Greenland (Figure~\ref{fig:smb}). This confirms recent results obtained by \citet{rau-rogozhina-2013} from the ERA-40 reanalysis data. However in all four cases, large SMB errors occurs along the margin where most of the melt processes take place.
 
 % ----------------------------------------------------------------------
 
