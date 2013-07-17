@@ -5,9 +5,6 @@
 \usepackage{graphicx}
 \graphicspath{{figures/}}
 
-\newcommand{\degC}{\,\ensuremath{\rm^\circ C}}
-\newcommand{\ddfunit}{\,\ensuremath{\rm mm\,^\circ C^{-1}\,day^{-1}\,}}
-
 % ----------------------------------------------------------------------
 
 \begin{document}
@@ -89,7 +86,7 @@ All four scenarios lead to significant errors in PDD estimates when applied on a
 
 \section{Surface mass balance}
 
-For each scenario, SMB is computed using a simple annual PDD model (github.com/jsegu/pypdd). Accumulation is assumed equal to precipitation when temperature is below 0\,\degC, and decreasing linearly with temperature between 0 and 2\,\degC. Melt is computed using degree day factors of 3\ddfunit for snow and 8\ddfunit for ice \citep{huybrechts-dewolde-1999}. Surface mass-balance is computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).
+For each scenario, SMB is computed using a simple annual PDD model (github.com/jsegu/pypdd). Accumulation is assumed equal to precipitation when temperature is below 0\,$\rm^\circ C$, and decreasing linearly with temperature between 0 and 2\,$\rm^\circ C$. Melt is computed using degree day factors of 3\,$\rm mm\,^\circ C^{-1}\,day^{-1}$ for snow and 8\,$\rm mm\,^\circ C^{-1}\,day^{-1}$ for ice \citep{huybrechts-dewolde-1999}. Surface mass-balance is computed over week-long intervals prior to annual integration using a scheme similar to the one implemented in the ice sheet model PISM (www.pism-docs.org).
 
 \begin{figure}
   \centering\includegraphics{smb-adiff-greenland}
