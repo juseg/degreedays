@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 plt.rc('font', size=6)
 plt.rc('savefig', dpi=254)
 plt.rc('path', simplify=True)
+plt.rc('mathtext', default='regular')
 mm = 1/25.4
 pad = 2*mm
 cbh = 4*mm
@@ -124,10 +125,10 @@ def diff(varname, region, isrelative=False):
     cb = plt.colorbar(cs, cax, orientation='horizontal', format=format)
     if varname == 'smb':
       longvarname = 'Surface mass balance'
-      unit = 'mm yr$\mathsf{^{-1}}$'
+      unit = 'mm a$^{-1}$'
     else:
       longvarname = 'Positive degree day'
-      unit = u'°C day'
+      unit = u'°C d'
     if isrelative:
       cb.set_label('%s relative error' % longvarname)
     else:
