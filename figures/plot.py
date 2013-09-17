@@ -29,7 +29,7 @@ def stdev():
     fig = plt.figure(figsize=(figw, figh))
 
     # plot data
-    filename = 'atm.nc'
+    filename = '../data/atm.nc'
     cube = iris.load(filename)[0]
     for i in (0, 1):
       ax = plt.axes(
@@ -81,7 +81,7 @@ def diff(varname, region, isrelative=False):
 
     # load data
     basename = ('r' if isrelative else 'a') + 'diff'
-    filename = basename + '-%s.nc'
+    filename = '../data/' + basename + '-%s.nc'
     cubenum = (4 if varname == 'smb' else 1)
     data = [iris.load(filename % s)[cubenum] for s in ['s0', 's5', 'avg', 'jja']]
 
