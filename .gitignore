@@ -11,6 +11,7 @@
 # Figures and data files
 *.png
 *.nc
+*.html
 
 # Saved versions
 /versions
