@@ -82,7 +82,7 @@ def diff(varname, region, isrelative=False):
     # load data
     basename = ('r' if isrelative else 'a') + 'diff'
     filename = '../data/' + basename + '-%s.nc'
-    cubenum = (4 if varname == 'smb' else 1)
+    cubenum = (1 if varname == 'smb' else 0)
     data = [iris.load(filename % s)[cubenum] for s in ['s0', 's5', 'avg', 'jja']]
 
     # pick colormap
@@ -125,7 +125,7 @@ def diff(varname, region, isrelative=False):
     cb = plt.colorbar(cs, cax, orientation='horizontal', format=format)
     if varname == 'smb':
       longvarname = 'Surface mass balance'
-      unit = 'mm a$^{-1}$'
+      unit = 'mm w.e. a$^{-1}$'
     else:
       longvarname = 'Positive degree day'
       unit = u'°C d'
