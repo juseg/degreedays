@@ -1,0 +1,15 @@
+# Files produces by latex
+*.aux
+*.bbl
+*.blg
+*.fff
+*.log
+*.out
+*.pdf
+*.ttt
+*.rtf
+
+# Data and figures
+*.nc
+*.pyc
+*.png
