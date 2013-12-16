@@ -14,15 +14,15 @@ plt.rc('savefig', dpi=254)
 
 ### Base functions ###
 
-def _getdata(dataset, region):
+def _getdata(dat, reg, mon):
     print 'reading netCDF data...'
     from netCDF4 import Dataset
 
     # open files
-    #znc   = Dataset('../data/%s.geop.nc' % dataset)
-    lsmnc = Dataset('../data/%s.mask.nc' % dataset)
-    ltmnc = Dataset('../data/%s.sat.mon.5801.avg.nc' % dataset)
-    stdnc = Dataset('../data/%s.sat.day.5801.dev.monstd.nc' % dataset)
+    #znc   = Dataset('../data/%s.geop.nc' % dat)
+    lsmnc = Dataset('../data/%s.mask.nc' % dat)
+    ltmnc = Dataset('../data/%s.sat.mon.5801.avg.nc' % dat)
+    stdnc = Dataset('../data/%s.sat.day.5801.dev.monstd.nc' % dat)
 
     # read data
     #zvar = znc.variables['z'][0]
@@ -38,32 +38,28 @@ def _getdata(dataset, region):
     ltmnc.close()
     stdnc.close()
 
-    # apply mask
+    # apply regional mask
     lon, lat = np.meshgrid(lon, lat)
     mask = (lsm == 0)
-    if region == 'ant':
+    if reg == 'ant':
         mask += (lat > -60)
-    elif region == 'grl':
+    elif reg == 'grl':
         mask += (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
     mask = np.tile(mask, (12, 1, 1))
     ltm = np.ma.masked_where(mask, ltm)
     std = np.ma.masked_where(mask, std)
-    return ltm, std
 
-
-def _timeslice(arrays, month):
-    """Extract timeslice from data arrays"""
-
-    if month == 'all':
-        return arrays
-    elif month == 'avg':
-        return (a[:].mean(axis=0) for a in arrays)
-    elif month == 'djf':
-        return (a[[12, 0, 1]].mean(axis=0) for a in arrays)
-    elif month == 'jja':
-        return (a[6:8].mean(axis=0) for a in arrays)
+    # extract monthly timeslice
+    if mon == 'all':
+        return ltm, std
+    elif mon == 'avg':
+        return (a[:].mean(axis=0) for a in (ltm, std))
+    elif mon == 'djf':
+        return (a[[12, 0, 1]].mean(axis=0) for a in (ltm, std))
+    elif mon == 'jja':
+        return (a[6:8].mean(axis=0) for a in (ltm, std))
     else:
-        return (a[int(month)] for a in arrays)
+        return (a[int(mon)] for a in (ltm, std))
 
 
 def _savefig(output, png=True, pdf=False):
@@ -77,7 +73,6 @@ def _savefig(output, png=True, pdf=False):
 def showmap(ltm, std):
     """Show a map of data extent"""
 
-    ltm, std = _timeslice((ltm, std), args.month)
     plt.subplot(211)
     plt.imshow(ltm)
     plt.subplot(212)
@@ -126,6 +121,6 @@ if __name__ == "__main__":
     reg = args.region
     mon = args.month
 
-    ltm, std = _getdata(dat, reg)
+    ltm, std = _getdata(dat, reg, mon)
     if args.scatter: scatter(ltm, std, reg)
     if args.showmap: showmap(ltm, std)
