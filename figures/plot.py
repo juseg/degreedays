@@ -1,6 +1,10 @@
 #!/usr/bin/env python2
 # coding: utf-8
 
+import cartopy.crs as ccrs
+import iris
+import iris.coord_categorisation
+import iris.plot as iplt
 import numpy as np
 from matplotlib import pyplot as plt
 mm = 1 / 25.4
@@ -15,51 +19,42 @@ plt.rc('savefig', dpi=254)
 ### Base functions ###
 
 def _getdata(dat, reg, mon):
-    print 'reading netCDF data...'
-    from netCDF4 import Dataset
 
     # open files
-    #znc   = Dataset('../data/%s.geop.nc' % dat)
-    lsmnc = Dataset('../data/%s.mask.nc' % dat)
-    ltmnc = Dataset('../data/%s.sat.mon.5801.avg.nc' % dat)
-    stdnc = Dataset('../data/%s.sat.day.5801.dev.monstd.nc' % dat)
-
-    # read data
-    #zvar = znc.variables['z'][0]
-    lsm = lsmnc.variables['lsm'][:]
-    lon = lsmnc.variables['longitude'][:]
-    lat = lsmnc.variables['latitude'][:]
-    ltm = ltmnc.variables['t2m'][:] - 273.15
-    std = stdnc.variables['t2m'][:]
-
-    # close files
-    #znc.close()
-    lsmnc.close()
-    ltmnc.close()
-    stdnc.close()
+    print 'reading netCDF data...'
+    #z   = iris.load_cube('../data/%s.geop.nc' % dat)
+    lsm = iris.load_cube('../data/%s.mask.nc' % dat)
+    ltm = iris.load_cube('../data/%s.sat.mon.5801.avg.nc' % dat)
+    std = iris.load_cube('../data/%s.sat.day.5801.dev.monstd.nc' % dat)
+    ltm.convert_units('degC')
 
     # apply regional mask
+    mask = (lsm.data[0] == 0)
+    lon = lsm.coord('longitude').points
+    lat = lsm.coord('latitude').points
     lon, lat = np.meshgrid(lon, lat)
-    mask = (lsm == 0)
     if reg == 'ant':
         mask += (lat > -60)
     elif reg == 'grl':
         mask += (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
     mask = np.tile(mask, (12, 1, 1))
-    ltm = np.ma.masked_where(mask, ltm)
-    std = np.ma.masked_where(mask, std)
+    ltm.data = np.ma.masked_where(mask, ltm.data)
+    std.data = np.ma.masked_where(mask, std.data)
 
     # extract monthly timeslice
     if mon == 'all':
         return ltm, std
     elif mon == 'avg':
-        return (a[:].mean(axis=0) for a in (ltm, std))
-    elif mon == 'djf':
-        return (a[[12, 0, 1]].mean(axis=0) for a in (ltm, std))
-    elif mon == 'jja':
-        return (a[6:8].mean(axis=0) for a in (ltm, std))
+        aggregator = iris.analysis.MEAN
+        return (cube.collapsed('time', aggregator) for cube in (ltm, std))
+    elif mon in ('djf', 'mam', 'jja', 'son'):
+        for cube in ltm, std:
+            iris.coord_categorisation.add_season(cube, 'time', name='season')
+        return (cube.aggregated_by('season', iris.analysis.MEAN)
+                .extract(iris.Constraint(season=mon))
+                for cube in (ltm, std))
     else:
-        return (a[int(mon)] for a in (ltm, std))
+        return (cube[int(mon)] for cube in (ltm, std))
 
 
 def _savefig(output, png=True, pdf=False):
@@ -74,22 +69,22 @@ def drawmap(ltm, std):
     """Plot data on a map"""
 
     # initialize figure
-    from mpl_toolkits.axes_grid1 import ImageGrid
-    fig = plt.figure(figsize=(85*mm, 72*mm))
-    grid = ImageGrid(fig, [ 8/85.,  8/72., 66/85., 62/72.],
-                     nrows_ncols=(2, 1), axes_pad=2*mm,
-                     cbar_mode='each', cbar_size=4*mm)
+    proj = ccrs.PlateCarree()
+    figw, figh = 85., 72.
+    fig = plt.figure(figsize=(figw*mm, figh*mm))
 
     # plot monthly means
-    ax = grid[0]
-    im = ax.imshow(ltm)
-    cb = plt.colorbar(im, ax.cax)
+    ax = plt.axes([2/figw, 37/figh, 66/figw, 33/figh], projection=proj)
+    cs = iplt.contourf(ltm)
+    ax = plt.axes([70/figw, 37/figh, 4/figw, 33/figh])
+    cb = plt.colorbar(cs, ax)
     cb.set_label('LTM')
 
     # plot standard deviation
-    ax = grid[1]
-    im = ax.imshow(std)
-    cb = plt.colorbar(im, ax.cax)
+    ax = plt.axes([2/figw, 2/figh, 66/figw, 33/figh], projection=proj)
+    cs = iplt.contourf(std)
+    ax = plt.axes([70/figw, 2/figh, 4/figw, 33/figh])
+    cb = plt.colorbar(cs, ax)
     cb.set_label('STD')
 
 
@@ -100,15 +95,14 @@ def scatter(ltm, std, reg):
     colors = ['b', 'b', 'g', 'g', 'g', 'r', 'r', 'r', 'y', 'y', 'y', 'b']
     for mon in range(12):
         print 'plotting month %02i data...' % mon
-        plt.scatter(ltm[mon], std[mon], marker='+', c=colors[mon], alpha=0.02)
+        plt.scatter(ltm.data[mon], std.data[mon], marker='+', c=colors[mon], alpha=0.02)
 
     # add polynomial fit
     if reg == 'grl': bounds = (-45, 10)
     if reg == 'ant': bounds = (-70, 10)
-    coef = np.polyfit(ltm.compressed(), std.compressed(), deg=1)
+    coef = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
     poly = np.poly1d(coef)
-    x = np.arange(*bounds)
-    plt.plot(x, poly(x), 'k')
+    plt.plot(bounds, poly(bounds), 'k')
     plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
              transform=plt.gca().transAxes)
 
