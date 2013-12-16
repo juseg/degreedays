@@ -68,23 +68,35 @@ def _savefig(output, png=True, pdf=False):
 def drawmap(ltm, std, dat, reg, mon):
     """Draw maps"""
 
+    if reg == 'grl':
+      proj = ccrs.NorthPolarStereo()
+      xlim = (-3e6, 0)
+      ylim = (-3e6, 0)
+    if reg == 'ant':
+      proj = ccrs.SouthPolarStereo()
+      xlim = (-3e6, 3e6)
+      ylim = (-3e6, 3e6)
+
     # initialize figure
-    proj = ccrs.PlateCarree()
-    figw, figh = 85., 72.
+    figw, figh = 86., 56.
     fig = plt.figure(figsize=(figw*mm, figh*mm))
 
     # plot monthly means
-    ax = plt.axes([2/figw, 37/figh, 66/figw, 33/figh], projection=proj)
-    cs = iplt.contourf(_extract(ltm, mon))
-    ax = plt.axes([70/figw, 37/figh, 4/figw, 33/figh])
-    cb = plt.colorbar(cs, ax)
+    ax = plt.axes([2/figw, 14/figh, 40/figw, 40/figh], projection=proj)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    cs = iplt.contourf(_extract(ltm, mon), extend='both')
+    ax = plt.axes([2/figw, 8/figh, 40/figw, 4/figh])
+    cb = plt.colorbar(cs, ax, orientation='horizontal')
     cb.set_label('LTM')
 
     # plot standard deviation
-    ax = plt.axes([2/figw, 2/figh, 66/figw, 33/figh], projection=proj)
-    cs = iplt.contourf(_extract(std, mon))
-    ax = plt.axes([70/figw, 2/figh, 4/figw, 33/figh])
-    cb = plt.colorbar(cs, ax)
+    ax = plt.axes([44/figw, 14/figh, 40/figw, 40/figh],  projection=proj)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    cs = iplt.contourf(_extract(std, mon), extend='both')
+    ax = plt.axes([44/figw, 8/figh, 40/figw, 4/figh])
+    cb = plt.colorbar(cs, ax, orientation='horizontal')
     cb.set_label('STD')
     mon = str(mon).zfill(2)
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
