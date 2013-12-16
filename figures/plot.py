@@ -51,17 +51,19 @@ def _getdata(dataset, region):
     return ltm, std
 
 
-def _timeslice(a, month):
-    """Extract timeslice from data array"""
+def _timeslice(arrays, month):
+    """Extract timeslice from data arrays"""
 
     if month == 'all':
-        return a[:].mean(axis=0)
-    if month == 'djf':
-        return a[[12, 0, 1]].mean(axis=0)
-    if month == 'jja':
-        return a[6:8].mean(axis=0)
+        return arrays
+    elif month == 'avg':
+        return (a[:].mean(axis=0) for a in arrays)
+    elif month == 'djf':
+        return (a[[12, 0, 1]].mean(axis=0) for a in arrays)
+    elif month == 'jja':
+        return (a[6:8].mean(axis=0) for a in arrays)
     else:
-        return a[int(month)]
+        return (a[int(month)] for a in arrays)
 
 
 def _savefig(output, png=True, pdf=False):
@@ -75,8 +77,7 @@ def _savefig(output, png=True, pdf=False):
 def showmap(ltm, std):
     """Show a map of data extent"""
 
-    ltm = _timeslice(ltm, args.month)
-    std = _timeslice(std, args.month)
+    ltm, std = _timeslice((ltm, std), args.month)
     plt.subplot(211)
     plt.imshow(ltm)
     plt.subplot(212)
@@ -121,7 +122,10 @@ if __name__ == "__main__":
     parser.add_argument('--showmap', action='store_true', help=showmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
     args = parser.parse_args()
+    dat = args.dataset
+    reg = args.region
+    mon = args.month
 
-    ltm, std = _getdata(args.dataset, args.region)
-    if args.scatter: scatter(ltm, std, args.region)
+    ltm, std = _getdata(dat, reg)
+    if args.scatter: scatter(ltm, std, reg)
     if args.showmap: showmap(ltm, std)
