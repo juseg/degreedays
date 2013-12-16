@@ -70,14 +70,27 @@ def _savefig(output, png=True, pdf=False):
 
 ### Plotting functions ###
 
-def showmap(ltm, std):
-    """Show a map of data extent"""
+def drawmap(ltm, std):
+    """Plot data on a map"""
 
-    plt.subplot(211)
-    plt.imshow(ltm)
-    plt.subplot(212)
-    plt.imshow(std)
-    plt.show()
+    # initialize figure
+    from mpl_toolkits.axes_grid1 import ImageGrid
+    fig = plt.figure(figsize=(85*mm, 72*mm))
+    grid = ImageGrid(fig, [ 8/85.,  8/72., 66/85., 62/72.],
+                     nrows_ncols=(2, 1), axes_pad=2*mm,
+                     cbar_mode='each', cbar_size=4*mm)
+
+    # plot monthly means
+    ax = grid[0]
+    im = ax.imshow(ltm)
+    cb = plt.colorbar(im, ax.cax)
+    cb.set_label('LTM')
+
+    # plot standard deviation
+    ax = grid[1]
+    im = ax.imshow(std)
+    cb = plt.colorbar(im, ax.cax)
+    cb.set_label('STD')
 
 
 def scatter(ltm, std, reg):
@@ -99,11 +112,10 @@ def scatter(ltm, std, reg):
     plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
              transform=plt.gca().transAxes)
 
-    # set axes properties and save
+    # set axes properties
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
     plt.xlim(*bounds)
-    _savefig('stdev-param-scatter-%s' % args.region)
 
 
 ### Command-line interface ###
@@ -114,7 +126,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
     parser.add_argument('-m', '--month', default='all')
-    parser.add_argument('--showmap', action='store_true', help=showmap.__doc__)
+    parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
     args = parser.parse_args()
     dat = args.dataset
@@ -122,5 +134,9 @@ if __name__ == "__main__":
     mon = args.month
 
     ltm, std = _getdata(dat, reg, mon)
-    if args.scatter: scatter(ltm, std, reg)
-    if args.showmap: showmap(ltm, std)
+    if args.scatter:
+        scatter(ltm, std, reg)
+        _savefig('stdev-param-scatter-%s' % reg)
+    if args.map:
+        drawmap(ltm, std)
+        _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
