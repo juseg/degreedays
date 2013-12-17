@@ -37,6 +37,8 @@ def _load(dat, reg, ann):
         mask += (lat > -60)
     elif reg == 'grl':
         mask += (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
+    elif reg == 'grl+ant':
+        mask += (lat > -60) * ((lon - 2*lat > 200) + (2*lon + 3*lat < 800))
     mask = np.tile(mask, (12, 1, 1))
     ltm.data = np.ma.masked_where(mask, ltm.data)
     std.data = np.ma.masked_where(mask, std.data)
@@ -70,14 +72,22 @@ def drawmap(ltm, std, dat, reg, mon):
     """Draw maps"""
 
     # select geographic projection
-    if reg == 'grl':
-        proj = ccrs.NorthPolarStereo()
-        xlim = (-3e6, 0)
-        ylim = (-3e6, 0)
     if reg == 'ant':
         proj = ccrs.SouthPolarStereo()
         xlim = (-3e6, 3e6)
         ylim = (-3e6, 3e6)
+    elif reg == 'grl':
+        proj = ccrs.NorthPolarStereo()
+        xlim = (-3e6, 0)
+        ylim = (-3e6, 0)
+    elif reg == 'grl+ant':
+        proj = ccrs.Stereographic()
+        xlim = (-40e6, 40e6)
+        ylim = (-40e6, 40e6)
+    else:
+        proj = ccrs.PlateCarree()
+        xlim = (-180, 180)
+        ylim = (-90, 90)
 
     # initialize figure
     figw, figh = 86., 56.
@@ -121,8 +131,10 @@ def scatter(ltm, std, dat, reg, mon):
         plt.scatter(x, y, marker='+', c=clist[m], alpha=0.02)
 
     # add polynomial fit
-    if reg == 'grl': bounds = (-45, 10)
-    if reg == 'ant': bounds = (-70, 10)
+    if reg == 'grl':
+        bounds = (-45, 10)
+    else:
+        bounds = (-70, 10)
     if mon == 'all':
         coef = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
         poly = np.poly1d(coef)
