@@ -90,6 +90,7 @@ def drawmap(ltm, std, dat, reg, mon):
         ylim = (-90, 90)
 
     # initialize figure
+    from matplotlib.colors import Normalize
     figw, figh = 86., 56.
     fig = plt.figure(figsize=(figw*mm, figh*mm))
 
@@ -97,20 +98,18 @@ def drawmap(ltm, std, dat, reg, mon):
     ax = plt.axes([2/figw, 14/figh, 40/figw, 40/figh], projection=proj)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    levs = np.linspace(-30, 10, 9)
-    cs = iplt.contourf(_extract(ltm, mon), levs, extend='both')
+    qm = iplt.pcolormesh(_extract(ltm, mon), norm=Normalize(-30, 10))
     ax = plt.axes([2/figw, 8/figh, 40/figw, 4/figh])
-    cb = plt.colorbar(cs, ax, orientation='horizontal')
+    cb = plt.colorbar(qm, ax, extend='both', orientation='horizontal')
     cb.set_label('LTM')
 
     # plot standard deviation
     ax = plt.axes([44/figw, 14/figh, 40/figw, 40/figh],  projection=proj)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    levs = np.linspace(0, 12, 9)
-    cs = iplt.contourf(_extract(std, mon), levs, extend='both')
+    qm = iplt.pcolormesh(_extract(std, mon), norm=Normalize(0, 12))
     ax = plt.axes([44/figw, 8/figh, 40/figw, 4/figh])
-    cb = plt.colorbar(cs, ax, orientation='horizontal')
+    cb = plt.colorbar(qm, ax, extend='both', orientation='horizontal')
     cb.set_label('STD')
     mon = str(mon).zfill(2)
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
