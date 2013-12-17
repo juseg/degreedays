@@ -68,6 +68,7 @@ def _savefig(output, png=True, pdf=False):
 def drawmap(ltm, std, dat, reg, mon):
     """Draw maps"""
 
+    # select geographic projection
     if reg == 'grl':
       proj = ccrs.NorthPolarStereo()
       xlim = (-3e6, 0)
@@ -85,7 +86,8 @@ def drawmap(ltm, std, dat, reg, mon):
     ax = plt.axes([2/figw, 14/figh, 40/figw, 40/figh], projection=proj)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    cs = iplt.contourf(_extract(ltm, mon), extend='both')
+    levs = np.linspace(-30, 10, 9)
+    cs = iplt.contourf(_extract(ltm, mon), levs, extend='both')
     ax = plt.axes([2/figw, 8/figh, 40/figw, 4/figh])
     cb = plt.colorbar(cs, ax, orientation='horizontal')
     cb.set_label('LTM')
@@ -94,7 +96,8 @@ def drawmap(ltm, std, dat, reg, mon):
     ax = plt.axes([44/figw, 14/figh, 40/figw, 40/figh],  projection=proj)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    cs = iplt.contourf(_extract(std, mon), extend='both')
+    levs = np.linspace(0, 12, 9)
+    cs = iplt.contourf(_extract(std, mon), levs, extend='both')
     ax = plt.axes([44/figw, 8/figh, 40/figw, 4/figh])
     cb = plt.colorbar(cs, ax, orientation='horizontal')
     cb.set_label('STD')
