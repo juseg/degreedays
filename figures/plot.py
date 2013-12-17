@@ -18,13 +18,14 @@ plt.rc('savefig', dpi=254)
 
 ### Base functions ###
 
-def _load(dat, reg):
+def _load(dat, reg, ann):
     """Load temperature data"""
 
     # read data files
     lsm = iris.load_cube('../data/%s.mask.nc' % dat)
     ltm = iris.load_cube('../data/%s.sat.mon.5801.avg.nc' % dat)
-    std = iris.load_cube('../data/%s.sat.day.5801.dev.monstd.nc' % dat)
+    std = iris.load_cube('../data/%s.sat.day.5801%s.monstd.nc'
+                         % (dat, '' if ann else '.dev'))
     ltm.convert_units('degC')
 
     # apply regional mask
@@ -70,13 +71,13 @@ def drawmap(ltm, std, dat, reg, mon):
 
     # select geographic projection
     if reg == 'grl':
-      proj = ccrs.NorthPolarStereo()
-      xlim = (-3e6, 0)
-      ylim = (-3e6, 0)
+        proj = ccrs.NorthPolarStereo()
+        xlim = (-3e6, 0)
+        ylim = (-3e6, 0)
     if reg == 'ant':
-      proj = ccrs.SouthPolarStereo()
-      xlim = (-3e6, 3e6)
-      ylim = (-3e6, 3e6)
+        proj = ccrs.SouthPolarStereo()
+        xlim = (-3e6, 3e6)
+        ylim = (-3e6, 3e6)
 
     # initialize figure
     figw, figh = 86., 56.
@@ -143,15 +144,19 @@ def scatter(ltm, std, dat, reg, mon):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('-a', '--annvar', action='store_true',
+                        help='Do not remove annual variability')
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
     args = parser.parse_args()
+    ann = args.annvar
     dat = args.dataset
     reg = args.region
 
-    ltm, std = _load(dat, reg)
+    ltm, std = _load(dat, reg, ann)
+    dat = dat + ann*'+ann'
     if args.scatter:
         for mon in range(12)+['all']:
             plt.clf()
