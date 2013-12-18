@@ -141,6 +141,15 @@ def scatter(ltm, std, dat, reg, mon):
         plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
                  transform=plt.gca().transAxes)
 
+    # plot region of interest
+    x = np.linspace(*bounds)
+    plt.plot(x, np.abs(x/2), 'k', lw=0.2)
+    plt.plot(x, np.abs(x), 'k', lw=0.2)
+    plt.text(-16, 8, r'$\sigma = -T/2$',
+             rotation=-np.degrees(np.arctan(55/20.*55/74)))
+    plt.text( -8, 8, r'$\sigma = -T$',
+             rotation=-np.degrees(np.arctan(55/10.*55/74)))
+
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
