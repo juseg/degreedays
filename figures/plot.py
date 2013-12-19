@@ -29,19 +29,20 @@ def _load(dat, reg, ann):
     ltm.convert_units('degC')
 
     # apply regional mask
-    mask = (lsm.data[0] == 0)
     lon = lsm.coord('longitude').points
     lat = lsm.coord('latitude').points
     lon, lat = np.meshgrid(lon, lat)
-    if reg == 'ant':
-        mask += (lat > -60)
-    elif reg == 'grl':
-        mask += (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
-    elif reg == 'grl+ant':
-        mask += (lat > -60) * ((lon - 2*lat > 200) + (2*lon + 3*lat < 800))
-    mask = np.tile(mask, (12, 1, 1))
-    ltm.data = np.ma.masked_where(mask, ltm.data)
-    std.data = np.ma.masked_where(mask, std.data)
+    antmask = (lsm.data[0] == 0) + (lat > -60)
+    grlmask = (lsm.data[0] == 0) + (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
+    for cube in ltm, std:
+        cube.data = np.ma.array(cube.data)
+        if reg == 'ant':
+            cube.data[:,antmask] = np.ma.masked
+        elif reg == 'grl':
+            cube.data[:,grlmask] = np.ma.masked
+        elif reg == 'grl+ant':
+            cube.data[:,lat<0] = np.roll(cube.data[:,lat<0], 6, axis=0)
+            cube.data[:,grlmask*antmask] = np.ma.masked
     return ltm, std
 
 
