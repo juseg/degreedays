@@ -125,9 +125,16 @@ def scatter(ltm, std, dat, reg, mon):
     # plot stdev data
     clist = ['b', 'b', 'g', 'g', 'g', 'r', 'r', 'r', 'y', 'y', 'y', 'b']
     for m in mlist:
+        if reg == 'grl+ant':
+            lon = ltm.coord('longitude').points
+            lat = ltm.coord('latitude').points
+            lon, lat = np.meshgrid(lon, lat)
+            c = lat
+        else:
+            c = clist[m]
         x = _extract(ltm, m).data
         y = _extract(std, m).data
-        plt.scatter(x, y, marker='+', c=clist[m], alpha=0.02)
+        plt.scatter(x, y, marker='+', c=c, cmap='RdBu', alpha=0.02)
 
     # add polynomial fit
     if reg == 'grl':
