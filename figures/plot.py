@@ -40,7 +40,7 @@ def _load(dat, reg, ann):
             cube.data[:,antmask] = np.ma.masked
         elif reg == 'grl':
             cube.data[:,grlmask] = np.ma.masked
-        elif reg == 'grl+ant':
+        elif reg == 'both':
             cube.data[:,lat<0] = np.roll(cube.data[:,lat<0], 6, axis=0)
             cube.data[:,grlmask*antmask] = np.ma.masked
     return ltm, std
@@ -81,7 +81,7 @@ def drawmap(ltm, std, dat, reg, mon):
         proj = ccrs.NorthPolarStereo()
         xlim = (-3e6, 0)
         ylim = (-3e6, 0)
-    elif reg == 'grl+ant':
+    elif reg == 'both':
         proj = ccrs.Stereographic()
         xlim = (-40e6, 40e6)
         ylim = (-40e6, 40e6)
@@ -112,7 +112,7 @@ def drawmap(ltm, std, dat, reg, mon):
     ax = plt.axes([44/figw, 8/figh, 40/figw, 4/figh])
     cb = plt.colorbar(qm, ax, extend='both', orientation='horizontal')
     cb.set_label('STD')
-    mon = str(mon).zfill(2)
+    if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
 
@@ -126,7 +126,7 @@ def scatter(ltm, std, dat, reg, mon):
     # plot stdev data
     clist = ['b', 'b', 'g', 'g', 'g', 'r', 'r', 'r', 'y', 'y', 'y', 'b']
     for m in mlist:
-        if reg == 'grl+ant':
+        if reg == 'both':
             lon = ltm.coord('longitude').points
             lat = ltm.coord('latitude').points
             lon, lat = np.meshgrid(lon, lat)
@@ -163,7 +163,7 @@ def scatter(ltm, std, dat, reg, mon):
     plt.ylabel('Long-term monthly standard deviation')
     plt.xlim(*bounds)
     plt.ylim(0, 10)
-    mon = str(mon).zfill(2)
+    if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg, mon))
 
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     reg = args.region
 
     ltm, std = _load(dat, reg, ann)
-    dat = dat + ann*'+ann'
+    dat = dat + ann*'ann'
     if args.scatter:
         for mon in range(12)+['all']:
             plt.clf()
