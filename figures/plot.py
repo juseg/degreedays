@@ -7,6 +7,7 @@ import iris.coord_categorisation
 import iris.plot as iplt
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.colors import LogNorm
 mm = 1 / 25.4
 plt.rc('figure', figsize=(85*mm, 65*mm))
 plt.rc('figure.subplot', left=9/85., right=83/85., bottom=8/65., top=63/65.)
@@ -115,6 +116,54 @@ def drawmap(ltm, std, dat, reg, mon):
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
+def densmap(ltm, std, dat, reg, mon, zoom=False):
+    """Draw density maps"""
+
+    # select bounds
+    if zoom:
+        xmin, xmax, ymin, ymax = -30, 10, 0, 4
+    elif reg == 'grl':
+        xmin, xmax, ymin, ymax = -45, 10, 0, 10
+    else:
+        xmin, xmax, ymin, ymax = -70, 10, 0, 10
+
+    # prepare weights
+    lon = ltm.coord('longitude').points
+    lat = ltm.coord('latitude').points
+    dlon = np.radians(lon[1] - lon[0])
+    dlat = np.radians(lat[0] - lat[1])
+    lon, lat = np.meshgrid(lon, lat)
+    x = _extract(ltm, mon).data
+    y = _extract(std, mon).data
+    if mon == 'all': lat = np.tile(lat, (12, 1, 1))
+    lat = np.ma.array(lat, mask=x.mask).compressed()
+    weights = 6371**2*np.cos(np.radians(lat))*dlon*dlat
+
+    # plot stdev data
+    im = plt.hist2d(x.compressed(), y.compressed(), 100,
+                    [[xmin, xmax], [ymin, ymax]],
+                    cmap='Blues', weights=weights)[3]
+
+    # plot region of interest
+    x = np.arange(xmin, xmax+1., 5.)
+    plt.plot(x, np.abs(x/2), 'k', lw=0.2)
+    plt.plot(x, np.abs(x), 'k', lw=0.2)
+    ytext = 0.8*ymax
+    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
+    plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
+             rotation=-np.degrees(np.arctan(textslope/2.)))
+    plt.text(-ytext, ytext, r'$\sigma = -T$',
+             rotation=-np.degrees(np.arctan(textslope)))
+
+    # set axes properties, add colorbar and save
+    plt.xlabel('Long-term monthly mean')
+    plt.ylabel('Long-term monthly standard deviation')
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
+    cb = plt.colorbar(im)
+    if type(mon) is int: mon = str(mon+1).zfill(2)
+    _savefig('stdev-param-densmap-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
+
 
 def scatter(ltm, std, dat, reg, mon, zoom=False):
     """Draw scatter plots"""
@@ -130,7 +179,7 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
             lon = ltm.coord('longitude').points
             lat = ltm.coord('latitude').points
             lon, lat = np.meshgrid(lon, lat)
-            c = lat
+            c = (lat > 0)
         else:
             c = clist[m]
         x = _extract(ltm, m).data
@@ -183,6 +232,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
+    parser.add_argument('--densmap', action='store_true', help=densmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
     args = parser.parse_args()
     ann = args.annvar
@@ -191,6 +241,10 @@ if __name__ == "__main__":
 
     ltm, std = _load(dat, reg, ann)
     dat = dat + ann*'ann'
+    if args.densmap:
+        for mon in range(12)+['all']:
+            plt.clf()
+            densmap(ltm, std, dat, reg, mon, zoom=args.zoom)
     if args.scatter:
         for mon in range(12)+['all']:
             plt.clf()
