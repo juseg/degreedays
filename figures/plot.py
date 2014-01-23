@@ -152,14 +152,15 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
                  transform=plt.gca().transAxes)
 
     # plot region of interest
-    x = np.arange(xmin, xmax+1. ,5.)
+    x = np.arange(xmin, xmax+1., 5.)
     plt.plot(x, np.abs(x/2), 'k', lw=0.2)
     plt.plot(x, np.abs(x), 'k', lw=0.2)
     ytext = 0.8*ymax
+    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
     plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
-             rotation=-np.degrees(np.arctan(55/20.*55/74)))
+             rotation=-np.degrees(np.arctan(textslope/2.)))
     plt.text(-ytext, ytext, r'$\sigma = -T$',
-             rotation=-np.degrees(np.arctan(55/10.*55/74)))
+             rotation=-np.degrees(np.arctan(textslope)))
 
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
