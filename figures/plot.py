@@ -139,26 +139,23 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
 
     # add polynomial fit
     if zoom:
-        xbounds = (-30, 10)
-        ybounds = (0, 4)
+        xmin, xmax, ymin, ymax = -30, 10, 0, 4
     elif reg == 'grl':
-        xbounds = (-45, 10)
-        ybounds = (0, 10)
+        xmin, xmax, ymin, ymax = -45, 10, 0, 10
     else:
-        xbounds = (-70, 10)
-        ybounds = (0, 10)
+        xmin, xmax, ymin, ymax = -70, 10, 0, 10
     if mon == 'all':
         coef = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
         poly = np.poly1d(coef)
-        plt.plot(xbounds, poly(xbounds), 'k')
+        plt.plot((xmin, xmax), poly((xmin, xmax)), 'k')
         plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
                  transform=plt.gca().transAxes)
 
     # plot region of interest
-    x = np.arange(xbounds[0],xbounds[1]+1. ,5)
+    x = np.arange(xmin, xmax+1. ,5.)
     plt.plot(x, np.abs(x/2), 'k', lw=0.2)
     plt.plot(x, np.abs(x), 'k', lw=0.2)
-    ytext = 0.8*ybounds[1]
+    ytext = 0.8*ymax
     plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
              rotation=-np.degrees(np.arctan(55/20.*55/74)))
     plt.text(-ytext, ytext, r'$\sigma = -T$',
@@ -167,8 +164,8 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    plt.xlim(*xbounds)
-    plt.ylim(*ybounds)
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
 
