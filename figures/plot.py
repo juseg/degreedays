@@ -116,7 +116,7 @@ def drawmap(ltm, std, dat, reg, mon):
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
 
-def scatter(ltm, std, dat, reg, mon):
+def scatter(ltm, std, dat, reg, mon, zoom=False):
     """Draw scatter plots"""
 
     # list of times
@@ -138,33 +138,39 @@ def scatter(ltm, std, dat, reg, mon):
         plt.scatter(x, y, marker='+', c=c, cmap='RdBu', alpha=0.02)
 
     # add polynomial fit
-    if reg == 'grl':
-        bounds = (-45, 10)
+    if zoom:
+        xbounds = (-30, 10)
+        ybounds = (0, 4)
+    elif reg == 'grl':
+        xbounds = (-45, 10)
+        ybounds = (0, 10)
     else:
-        bounds = (-70, 10)
+        xbounds = (-70, 10)
+        ybounds = (0, 10)
     if mon == 'all':
         coef = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
         poly = np.poly1d(coef)
-        plt.plot(bounds, poly(bounds), 'k')
+        plt.plot(xbounds, poly(xbounds), 'k')
         plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
                  transform=plt.gca().transAxes)
 
     # plot region of interest
-    x = np.linspace(*bounds)
+    x = np.arange(xbounds[0],xbounds[1]+1. ,5)
     plt.plot(x, np.abs(x/2), 'k', lw=0.2)
     plt.plot(x, np.abs(x), 'k', lw=0.2)
-    plt.text(-16, 8, r'$\sigma = -T/2$',
+    ytext = 0.8*ybounds[1]
+    plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
              rotation=-np.degrees(np.arctan(55/20.*55/74)))
-    plt.text( -8, 8, r'$\sigma = -T$',
+    plt.text(-ytext, ytext, r'$\sigma = -T$',
              rotation=-np.degrees(np.arctan(55/10.*55/74)))
 
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    plt.xlim(*bounds)
-    plt.ylim(0, 10)
+    plt.xlim(*xbounds)
+    plt.ylim(*ybounds)
     if type(mon) is int: mon = str(mon+1).zfill(2)
-    _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg, mon))
+    _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
 
 
 ### Command-line interface ###
@@ -174,6 +180,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--annvar', action='store_true',
                         help='Do not remove annual variability')
+    parser.add_argument('-z', '--zoom', action='store_true',
+                        help='Zoom on summer values')
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
@@ -188,7 +196,7 @@ if __name__ == "__main__":
     if args.scatter:
         for mon in range(12)+['all']:
             plt.clf()
-            scatter(ltm, std, dat, reg, mon)
+            scatter(ltm, std, dat, reg, mon, zoom=args.zoom)
     if args.map:
         for mon in range(12):
             plt.clf()
