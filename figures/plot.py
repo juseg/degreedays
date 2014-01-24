@@ -7,7 +7,7 @@ import iris.coord_categorisation
 import iris.plot as iplt
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.colors import LogNorm
+from matplotlib.colors import ListedColormap, LogNorm
 mm = 1 / 25.4
 plt.rc('figure', figsize=(85*mm, 65*mm))
 plt.rc('figure.subplot', left=9/85., right=83/85., bottom=8/65., top=63/65.)
@@ -184,7 +184,8 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
             c = clist[m]
         x = _extract(ltm, m).data
         y = _extract(std, m).data
-        plt.scatter(x, y, marker='+', c=c, cmap='RdBu', alpha=0.02)
+        plt.scatter(x, y, marker='+', c=c,  alpha=0.02,
+                    cmap=ListedColormap(['gray', 'red']))
 
     # add polynomial fit
     if zoom:
