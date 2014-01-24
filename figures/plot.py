@@ -6,6 +6,7 @@ import iris
 import iris.coord_categorisation
 import iris.plot as iplt
 import numpy as np
+from scipy.special import erfc
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap, LogNorm
 mm = 1 / 25.4
@@ -195,11 +196,19 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
     else:
         xmin, xmax, ymin, ymax = -70, 10, 0, 10
     if mon == 'all':
-        coef = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
-        poly = np.poly1d(coef)
-        plt.plot((xmin, xmax), poly((xmin, xmax)), 'k')
-        plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
-                 transform=plt.gca().transAxes)
+        u = ltm.data.compressed() / std.data.compressed()
+        coef1 = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
+        coef2 = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1,
+            w=np.exp(-u**2/2)/np.sqrt(2*np.pi)+u/2*erfc(-u/np.sqrt(2))-(u>0)*u)
+        poly1 = np.poly1d(coef1)
+        poly2 = np.poly1d(coef2)
+        plt.plot((xmin, xmax), poly1((xmin, xmax)), c='gray', ls='--')
+        plt.plot((xmin, xmax), poly2((xmin, xmax)), 'k')
+        plt.text(0.1, 0.2, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef1),
+                 color='gray', transform=plt.gca().transAxes)
+        plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef2),
+                 color='k', transform=plt.gca().transAxes)
+
 
     # plot region of interest
     x = np.arange(xmin, xmax+1., 5.)
