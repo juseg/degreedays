@@ -231,6 +231,8 @@ if __name__ == "__main__":
                         help='Zoom on summer values')
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
+    parser.add_argument('--fig1', action='store_true', help='Draw Fig. 1')
+    parser.add_argument('--fig2', action='store_true', help='Draw Fig. 2')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
     parser.add_argument('--densmap', action='store_true', help=densmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
@@ -239,17 +241,26 @@ if __name__ == "__main__":
     dat = args.dataset
     reg = args.region
 
-    ltm, std = _load(dat, reg, ann)
-    dat = dat + ann*'ann'
-    if args.densmap:
-        for mon in range(12)+['all']:
-            plt.clf()
-            densmap(ltm, std, dat, reg, mon, zoom=args.zoom)
-    if args.scatter:
-        for mon in range(12)+['all']:
-            plt.clf()
-            scatter(ltm, std, dat, reg, mon, zoom=args.zoom)
-    if args.map:
-        for mon in range(12):
-            plt.clf()
-            drawmap(ltm, std, dat, reg, mon)
+    if args.fig1:
+        plt.clf()
+        ltm, std = _load('era40', 'both', ann=False)
+        scatter(ltm, std, 'era40', 'both', 6, zoom=True)
+    if args.fig2:
+        plt.clf()
+        ltm, std = _load('era40', 'grl', ann=False)
+        scatter(ltm, std, 'era40', 'grl', 'all', zoom=False)
+    if any((args.densmap, args.scatter, args.map)):
+        ltm, std = _load(dat, reg, ann)
+        dat = dat + ann*'ann'
+        if args.densmap:
+            for mon in range(12)+['all']:
+                plt.clf()
+                densmap(ltm, std, dat, reg, mon, zoom=args.zoom)
+        if args.scatter:
+            for mon in range(12)+['all']:
+                plt.clf()
+                scatter(ltm, std, dat, reg, mon, zoom=args.zoom)
+        if args.map:
+            for mon in range(12):
+                plt.clf()
+                drawmap(ltm, std, dat, reg, mon)
