@@ -6,7 +6,6 @@ import iris
 import iris.coord_categorisation
 import iris.plot as iplt
 import numpy as np
-from scipy.special import erfc
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap, LogNorm
 mm = 1 / 25.4
@@ -19,6 +18,11 @@ plt.rc('savefig', dpi=254)
 
 
 ### Base functions ###
+
+def _teffdiff(T, S):
+    from scipy.special import erfc
+    u = T / 2.**.5 / S
+    return S / 2.**.5 * (np.exp(-u**2)/np.pi**.5 + u*erfc(-u)) - (T>0)*T
 
 def _load(dat, reg, ann):
     """Load temperature data"""
@@ -196,10 +200,10 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
     else:
         xmin, xmax, ymin, ymax = -70, 10, 0, 10
     if mon == 'all':
-        u = ltm.data.compressed() / std.data.compressed()
-        coef1 = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1)
-        coef2 = np.polyfit(ltm.data.compressed(), std.data.compressed(), deg=1,
-            w=np.exp(-u**2/2)/np.sqrt(2*np.pi)+u/2*erfc(-u/np.sqrt(2))-(u>0)*u)
+        x = ltm.data.compressed()
+        y = std.data.compressed()
+        coef1 = np.polyfit(x, y, deg=1)
+        coef2 = np.polyfit(x, y, deg=1, w=_teffdiff(x, y))
         poly1 = np.poly1d(coef1)
         poly2 = np.poly1d(coef2)
         plt.plot((xmin, xmax), poly1((xmin, xmax)), c='gray', ls='--')
@@ -229,6 +233,16 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
 
+def pdddiff():
+    """Plot effect of standard deviation on melt"""
+
+    from mpl_toolkits.mplot3d import axes3d
+    T = np.linspace(-5, 5, 21)
+    S = np.linspace(1, 5, 21)
+    T, S = np.meshgrid(T, S)
+    ax = plt.axes(projection='3d')
+    ax.plot_wireframe(T, S, _teffdiff(T, S))
+    _savefig('pdddiff')
 
 ### Command-line interface ###
 
@@ -246,6 +260,7 @@ if __name__ == "__main__":
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
     parser.add_argument('--densmap', action='store_true', help=densmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
+    parser.add_argument('--pdddiff', action='store_true', help=pdddiff.__doc__)
     args = parser.parse_args()
     ann = args.annvar
     dat = args.dataset
@@ -274,3 +289,4 @@ if __name__ == "__main__":
             for mon in range(12):
                 plt.clf()
                 drawmap(ltm, std, dat, reg, mon)
+    if args.pdddiff: pdddiff()
