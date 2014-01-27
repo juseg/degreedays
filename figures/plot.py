@@ -29,6 +29,7 @@ def _load(dat, reg, ann):
 
     # read data files
     lsm = iris.load_cube('../data/%s.mask.nc' % dat)
+    tvl = iris.load_cube('../data/%s.tvl.nc' % dat)
     ltm = iris.load_cube('../data/%s.sat.mon.5801.avg.nc' % dat)
     std = iris.load_cube('../data/%s.sat.day.5801%s.monstd.nc'
                          % (dat, '' if ann else '.dev'))
@@ -38,8 +39,9 @@ def _load(dat, reg, ann):
     lon = lsm.coord('longitude').points
     lat = lsm.coord('latitude').points
     lon, lat = np.meshgrid(lon, lat)
-    antmask = (lsm.data[0] == 0) + (lat > -60)
-    grlmask = (lsm.data[0] == 0) + (lon - 2*lat > 200) + (2*lon + 3*lat < 800)
+    icemask = (lsm.data[0] == 0) + (tvl.data[0] > 0)
+    antmask = icemask + (lat > -60)
+    grlmask = icemask + (lon - 2*lat > 200) + (2*lon + 3*lat < 800) + (lon - 4*lat < -28)
     for cube in ltm, std:
         cube.data = np.ma.array(cube.data)
         if reg == 'ant':
