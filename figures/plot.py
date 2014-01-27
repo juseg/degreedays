@@ -196,7 +196,7 @@ def densmap(ltm, std, dat, reg, mon, zoom=False):
     _savefig('stdev-param-densmap-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
 
 
-def scatter(ltm, std, dat, reg, mon, zoom=False):
+def scatter(ltm, std, var, dat, reg, mon, zoom=False):
     """Draw scatter plots"""
 
     # list of times
@@ -215,6 +215,7 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
             c = clist[m]
         x = _extract(ltm, m).data
         y = _extract(std, m).data
+        if var == 'dteff': y = _teffdiff(x, y)
         plt.scatter(x, y, marker='+', c=c,  alpha=0.02,
                     cmap=ListedColormap(['gray', 'red']))
 
@@ -223,15 +224,19 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
     if mon == 'all':
         x = ltm.data.compressed()
         y = std.data.compressed()
-        _linfit(x, y)
-        _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
+        if var == 'sigma':
+            _linfit(x, y)
+            _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
 
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    _vregion()
+    if var == 'sigma': _vregion()
+    if var == 'dteff':
+        plt.yscale('log')
+        plt.ylim(1e-6, 1e0)
     if type(mon) is int: mon = str(mon+1).zfill(2)
-    _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
+    _savefig('stdev-param-scatter-%s-%s-%s-%s' % (var, dat, reg + zoom*'-zoom', mon))
 
 def pdddiff():
     """Plot effect of standard deviation on melt"""
@@ -255,6 +260,7 @@ if __name__ == "__main__":
                         help='Zoom on summer values')
     parser.add_argument('-d', '--dataset', default='era40')
     parser.add_argument('-r', '--region', default='grl')
+    parser.add_argument('-v', '--variable', default='sigma')
     parser.add_argument('--fig1', action='store_true', help='Draw Fig. 1')
     parser.add_argument('--fig2', action='store_true', help='Draw Fig. 2')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
@@ -265,15 +271,16 @@ if __name__ == "__main__":
     ann = args.annvar
     dat = args.dataset
     reg = args.region
+    var = args.variable
 
     if args.fig1:
         plt.clf()
         ltm, std = _load('era40', 'both', ann=False)
-        scatter(ltm, std, 'era40', 'both', 6, zoom=True)
+        scatter(ltm, std, 'sigma', 'era40', 'both', 6, zoom=True)
     if args.fig2:
         plt.clf()
         ltm, std = _load('era40', 'grl', ann=False)
-        scatter(ltm, std, 'era40', 'grl', 'all', zoom=False)
+        scatter(ltm, std, 'sigma', 'era40', 'grl', 'all', zoom=False)
     if any((args.densmap, args.scatter, args.map)):
         ltm, std = _load(dat, reg, ann)
         dat = dat + ann*'ann'
@@ -284,7 +291,7 @@ if __name__ == "__main__":
         if args.scatter:
             for mon in range(12)+['all']:
                 plt.clf()
-                scatter(ltm, std, dat, reg, mon, zoom=args.zoom)
+                scatter(ltm, std, var, dat, reg, mon, zoom=args.zoom)
         if args.map:
             for mon in range(12):
                 plt.clf()
