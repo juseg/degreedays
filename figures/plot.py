@@ -19,11 +19,6 @@ plt.rc('savefig', dpi=254)
 
 ### Base functions ###
 
-def _teffdiff(T, S):
-    from scipy.special import erfc
-    u = T / 2.**.5 / S
-    return S / 2.**.5 * (np.exp(-u**2)/np.pi**.5 + u*erfc(-u)) - (T>0)*T
-
 def _load(dat, reg, ann):
     """Load temperature data"""
 
@@ -67,6 +62,52 @@ def _extract(cube, mon):
         return cube.aggregated_by('season', iris.analysis.MEAN).extract(iris.Constraint(season=mon))
     else:
         return cube[int(mon)]
+
+
+def _teffdiff(T, S):
+    """Compute sigma effect on effective temperature for melt"""
+    from scipy.special import erfc
+    u = T / 2.**.5 / S
+    return S / 2.**.5 * (np.exp(-u**2)/np.pi**.5 + u*erfc(-u)) - (T>0)*T
+
+
+def _setxylim(reg, zoom=False):
+    """Set axes limits"""
+    ax = plt.gca()
+    ax.set_xlim((-30. if zoom else -45. if reg == 'grl' else -70.), 10.)
+    ax.set_ylim(0., (4. if zoom else 10.))
+
+
+def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.2)):
+    """Add linear fit"""
+    ax = plt.gca()
+    xlim = ax.get_xlim()
+    coef = np.polyfit(x, y, deg=1, w=w)
+    poly = np.poly1d(coef)
+    ax.plot(xlim, poly(xlim), c=c, ls=ls)
+    ax.text(*textpos, s=r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
+            color=c, transform=ax.transAxes)
+
+
+def _vregion():
+    """Roughly delimit region of interest"""
+
+    # get window extent
+    ax = plt.gca()
+    xmin, xmax = ax.get_xlim()
+    ymin, ymax = ax.get_ylim()
+
+    # plot T={+,-}{1,2}*sigma lines
+    x = np.arange(xmin, xmax+1., 5.)
+    ax.plot(x, np.abs(x/2), 'k', lw=0.2)
+    ax.plot(x, np.abs(x), 'k', lw=0.2)
+
+    # add labels
+    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
+    ax.text(-1.6*ymax, 0.8*ymax, r'$\sigma = -T/2$',
+            rotation=-np.degrees(np.arctan(textslope/2.)))
+    ax.text(-0.8*ymax, 0.8*ymax, r'$\sigma = -T$',
+            rotation=-np.degrees(np.arctan(textslope)))
 
 
 def _savefig(output, png=True, pdf=False):
@@ -123,16 +164,9 @@ def drawmap(ltm, std, dat, reg, mon):
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
+
 def densmap(ltm, std, dat, reg, mon, zoom=False):
     """Draw density maps"""
-
-    # select bounds
-    if zoom:
-        xmin, xmax, ymin, ymax = -30, 10, 0, 4
-    elif reg == 'grl':
-        xmin, xmax, ymin, ymax = -45, 10, 0, 10
-    else:
-        xmin, xmax, ymin, ymax = -70, 10, 0, 10
 
     # prepare weights
     lon = ltm.coord('longitude').points
@@ -147,26 +181,16 @@ def densmap(ltm, std, dat, reg, mon, zoom=False):
     weights = 6371**2*np.cos(np.radians(lat))*dlon*dlat
 
     # plot stdev data
+    _setxylim(reg, zoom=zoom)
+    ax = plt.gca()
     im = plt.hist2d(x.compressed(), y.compressed(), 100,
-                    [[xmin, xmax], [ymin, ymax]],
+                    (ax.get_xlim(), ax.get_ylim()),
                     cmap='Blues', weights=weights)[3]
-
-    # plot region of interest
-    x = np.arange(xmin, xmax+1., 5.)
-    plt.plot(x, np.abs(x/2), 'k', lw=0.2)
-    plt.plot(x, np.abs(x), 'k', lw=0.2)
-    ytext = 0.8*ymax
-    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
-    plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
-             rotation=-np.degrees(np.arctan(textslope/2.)))
-    plt.text(-ytext, ytext, r'$\sigma = -T$',
-             rotation=-np.degrees(np.arctan(textslope)))
 
     # set axes properties, add colorbar and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
+    _vregion()
     cb = plt.colorbar(im)
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-densmap-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
@@ -194,44 +218,18 @@ def scatter(ltm, std, dat, reg, mon, zoom=False):
         plt.scatter(x, y, marker='+', c=c,  alpha=0.02,
                     cmap=ListedColormap(['gray', 'red']))
 
-    # add polynomial fit
-    if zoom:
-        xmin, xmax, ymin, ymax = -30, 10, 0, 4
-    elif reg == 'grl':
-        xmin, xmax, ymin, ymax = -45, 10, 0, 10
-    else:
-        xmin, xmax, ymin, ymax = -70, 10, 0, 10
+    # add linear fit
+    _setxylim(reg, zoom=zoom)
     if mon == 'all':
         x = ltm.data.compressed()
         y = std.data.compressed()
-        coef1 = np.polyfit(x, y, deg=1)
-        coef2 = np.polyfit(x, y, deg=1, w=_teffdiff(x, y))
-        poly1 = np.poly1d(coef1)
-        poly2 = np.poly1d(coef2)
-        plt.plot((xmin, xmax), poly1((xmin, xmax)), c='gray', ls='--')
-        plt.plot((xmin, xmax), poly2((xmin, xmax)), 'k')
-        plt.text(0.1, 0.2, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef1),
-                 color='gray', transform=plt.gca().transAxes)
-        plt.text(0.1, 0.1, r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef2),
-                 color='k', transform=plt.gca().transAxes)
-
-
-    # plot region of interest
-    x = np.arange(xmin, xmax+1., 5.)
-    plt.plot(x, np.abs(x/2), 'k', lw=0.2)
-    plt.plot(x, np.abs(x), 'k', lw=0.2)
-    ytext = 0.8*ymax
-    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
-    plt.text(-2*ytext, ytext, r'$\sigma = -T/2$',
-             rotation=-np.degrees(np.arctan(textslope/2.)))
-    plt.text(-ytext, ytext, r'$\sigma = -T$',
-             rotation=-np.degrees(np.arctan(textslope)))
+        _linfit(x, y)
+        _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
 
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
+    _vregion()
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
 
