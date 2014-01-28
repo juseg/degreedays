@@ -23,7 +23,7 @@ def _load(dat, reg, ann):
     """Load temperature data"""
 
     # read data files
-    lsm = iris.load_cube('../data/%s.mask.nc' % dat)
+    lsm = iris.load_cube('../data/%s.lsm.nc' % dat)
     tvl = iris.load_cube('../data/%s.tvl.nc' % dat)
     ltm = iris.load_cube('../data/%s.sat.mon.5801.avg.nc' % dat)
     std = iris.load_cube('../data/%s.sat.day.5801%s.monstd.nc'
