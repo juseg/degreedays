@@ -90,27 +90,6 @@ def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.2)):
             color=c, transform=ax.transAxes)
 
 
-def _vregion():
-    """Roughly delimit region of interest"""
-
-    # get window extent
-    ax = plt.gca()
-    xmin, xmax = ax.get_xlim()
-    ymin, ymax = ax.get_ylim()
-
-    # plot T={+,-}{1,2}*sigma lines
-    x = np.arange(xmin, xmax+1., 5.)
-    ax.plot(x, np.abs(x/2), 'k', lw=0.2)
-    ax.plot(x, np.abs(x), 'k', lw=0.2)
-
-    # add labels
-    textslope = (xmax-xmin)/(ymax-ymin)*55/74.
-    ax.text(-1.6*ymax, 0.8*ymax, r'$\sigma = -T/2$',
-            rotation=-np.degrees(np.arctan(textslope/2.)))
-    ax.text(-0.8*ymax, 0.8*ymax, r'$\sigma = -T$',
-            rotation=-np.degrees(np.arctan(textslope)))
-
-
 def _dteffcontour():
     """Add effective temperature effect contours"""
 
@@ -207,7 +186,7 @@ def densmap(ltm, std, dat, reg, mon, zoom=False):
     # set axes properties, add colorbar and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    _vregion()
+    _dteffcontour()
     cb = plt.colorbar(im)
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-densmap-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
