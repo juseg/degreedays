@@ -110,6 +110,22 @@ def _vregion():
             rotation=-np.degrees(np.arctan(textslope)))
 
 
+def _dteffcontour():
+    """Add effective temperature effect contours"""
+
+    # prepare grid
+    ax = plt.gca()
+    x = np.linspace(*ax.get_xlim(), num=101)
+    y = np.linspace(*ax.get_ylim(), num=101)
+    x, y = np.meshgrid(x, y)
+
+    # plot tdeff contours
+    cs = ax.contour(x, y, _teffdiff(x, y),
+                    levels=[1e-6, 1e-3, 1e-1, 1],
+                    colors='k', linewidths=0.2)
+    cs.clabel(fontsize=4, fmt=u'$\Delta T_{eff} = %g °C$')
+
+
 def _savefig(output, png=True, pdf=False):
     print 'saving ' + output
     if png: plt.savefig(output + '.png')
@@ -231,7 +247,7 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False):
     # set axes properties and save
     plt.xlabel('Long-term monthly mean')
     plt.ylabel('Long-term monthly standard deviation')
-    if var == 'sigma': _vregion()
+    if var == 'sigma': _dteffcontour()
     if var == 'dteff':
         plt.yscale('log')
         plt.ylim(1e-6, 1e0)
