@@ -23,11 +23,12 @@ def _load(dat, reg, ann):
     """Load temperature data"""
 
     # read data files
+    pp = {'era40': 5801, 'erai': 7912}[dat]
     lsm = iris.load_cube('../data/%s.lsm.nc' % dat)
     tvl = iris.load_cube('../data/%s.tvl.nc' % dat)
-    ltm = iris.load_cube('../data/%s.sat.mon.5801.avg.nc' % dat)
-    std = iris.load_cube('../data/%s.sat.day.5801%s.monstd.nc'
-                         % (dat, '' if ann else '.dev'))
+    ltm = iris.load_cube('../data/%s.sat.mon.%i.avg.nc' % (dat, pp))
+    std = iris.load_cube('../data/%s.sat.day.%i%s.monstd.nc'
+                         % (dat, pp, '' if ann else '.dev'))
     ltm.convert_units('degC')
 
     # apply regional mask
