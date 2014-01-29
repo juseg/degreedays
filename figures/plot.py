@@ -79,7 +79,7 @@ def _setxylim(reg, zoom=False):
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.2)):
+def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.1)):
     """Add linear fit"""
     ax = plt.gca()
     xlim = ax.get_xlim()
@@ -229,10 +229,7 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False):
 
     # add linear fit
     if mon == 'all' and var == 'sigma':
-        x = x.compressed()
-        y = y.compressed()
-        _linfit(x, y)
-        _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
+        _linfit(x.compressed(), y.compressed())
 
     # save
     if type(mon) is int: mon = str(mon+1).zfill(2)
