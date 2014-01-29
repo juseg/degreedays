@@ -171,37 +171,6 @@ def drawmap(ltm, std, dat, reg, mon):
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
 
-def densmap(ltm, std, dat, reg, mon, zoom=False):
-    """Draw density maps"""
-
-    # prepare weights
-    lon = ltm.coord('longitude').points
-    lat = ltm.coord('latitude').points
-    dlon = np.radians(lon[1] - lon[0])
-    dlat = np.radians(lat[0] - lat[1])
-    lon, lat = np.meshgrid(lon, lat)
-    x = _extract(ltm, mon).data
-    y = _extract(std, mon).data
-    if mon == 'all': lat = np.tile(lat, (12, 1, 1))
-    lat = np.ma.array(lat, mask=x.mask).compressed()
-    weights = 6371**2*np.cos(np.radians(lat))*dlon*dlat
-
-    # plot stdev data
-    _setxylim(reg, zoom=zoom)
-    ax = plt.gca()
-    im = plt.hist2d(x.compressed(), y.compressed(), 100,
-                    (ax.get_xlim(), ax.get_ylim()),
-                    cmap='Blues', weights=weights)[3]
-
-    # set axes properties, add colorbar and save
-    plt.xlabel('Long-term monthly mean')
-    plt.ylabel('Long-term monthly standard deviation')
-    _dteffcontour()
-    cb = plt.colorbar(im)
-    if type(mon) is int: mon = str(mon+1).zfill(2)
-    _savefig('stdev-param-densmap-%s-%s-%s' % (dat, reg + zoom*'-zoom', mon))
-
-
 def scatter(ltm, std, var, dat, reg, mon, zoom=False):
     """Draw scatter plots"""
 
@@ -263,7 +232,6 @@ if __name__ == "__main__":
     parser.add_argument('--fig1', action='store_true', help='Draw Fig. 1')
     parser.add_argument('--fig2', action='store_true', help='Draw Fig. 2')
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
-    parser.add_argument('--densmap', action='store_true', help=densmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
     args = parser.parse_args()
     ann = args.annvar
@@ -279,18 +247,13 @@ if __name__ == "__main__":
         plt.clf()
         ltm, std = _load('era40', 'grl', ann=False)
         scatter(ltm, std, 'sigma', 'era40', 'grl', 'all', zoom=False)
-    if any((args.densmap, args.scatter, args.map)):
-        ltm, std = _load(dat, reg, ann)
-        dat = dat + ann*'ann'
-        if args.densmap:
-            for mon in range(12)+['all']:
-                plt.clf()
-                densmap(ltm, std, dat, reg, mon, zoom=args.zoom)
-        if args.scatter:
-            for mon in range(12)+['all']:
-                plt.clf()
-                scatter(ltm, std, var, dat, reg, mon, zoom=args.zoom)
-        if args.map:
-            for mon in range(12):
-                plt.clf()
-                drawmap(ltm, std, dat, reg, mon)
+    ltm, std = _load(dat, reg, ann)
+    dat = dat + ann*'ann'
+    if args.scatter:
+        for mon in range(12)+['all']:
+            plt.clf()
+            scatter(ltm, std, var, dat, reg, mon, zoom=args.zoom)
+    if args.map:
+        for mon in range(12):
+            plt.clf()
+            drawmap(ltm, std, dat, reg, mon)
