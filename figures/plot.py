@@ -195,44 +195,49 @@ def densmap(ltm, std, dat, reg, mon, zoom=False):
 def scatter(ltm, std, var, dat, reg, mon, zoom=False):
     """Draw scatter plots"""
 
-    # list of times
-    if mon == 'all': mlist = range(12)
-    else: mlist = [mon]
-
     # plot stdev data
+    x = _extract(ltm, mon).data
+    y = _extract(std, mon).data
+
+    # set color table and color map
     clist = ['b', 'b', 'g', 'g', 'g', 'r', 'r', 'r', 'y', 'y', 'y', 'b']
-    for m in mlist:
-        if reg == 'both':
-            lon = ltm.coord('longitude').points
-            lat = ltm.coord('latitude').points
-            lon, lat = np.meshgrid(lon, lat)
-            c = (lat > 0)
-        else:
-            c = clist[m]
-        x = _extract(ltm, m).data
-        y = _extract(std, m).data
-        if var == 'dteff': y = _teffdiff(x, y)
-        plt.scatter(x, y, marker='+', c=c,  alpha=0.02,
-                    cmap=ListedColormap(['gray', 'red']))
+    if reg == 'both':
+        lon = ltm.coord('longitude').points
+        lat = ltm.coord('latitude').points
+        lon, lat = np.meshgrid(lon, lat)
+        c = (lat > 0)
+        cmap = ListedColormap(['gray', 'red'])
+    elif mon == 'all':
+        c = np.array([np.ones((x[0].shape))+i for i in range(12)])
+        cmap = ListedColormap(clist)
+    else:
+        c = clist[mon]
+        cmap = None
+    if var == 'dteff': y = _teffdiff(x, y)
+    plt.scatter(x, y, marker='+', c=c,  alpha=0.02, cmap=cmap)
 
-    # add linear fit
+    # set axes properties and labels
     _setxylim(reg, zoom=zoom)
-    if mon == 'all':
-        x = ltm.data.compressed()
-        y = std.data.compressed()
-        if var == 'sigma':
-            _linfit(x, y)
-            _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
-
-    # set axes properties and save
-    plt.xlabel('Long-term monthly mean')
-    plt.ylabel('Long-term monthly standard deviation')
-    if var == 'sigma': _dteffcontour()
+    plt.xlabel(u'Long-term monthly mean (°C)')
+    if var == 'sigma':
+        _dteffcontour()
+        plt.ylabel('Long-term monthly standard deviation (K)')
     if var == 'dteff':
         plt.yscale('log')
         plt.ylim(1e-6, 1e0)
+        plt.ylabel('Effective temperature increase (K)')
+
+    # add linear fit
+    if mon == 'all' and var == 'sigma':
+        x = x.compressed()
+        y = y.compressed()
+        _linfit(x, y)
+        _linfit(x, y, w=_teffdiff(x, y), c='gray', ls='--', textpos=(0.1, 0.1))
+
+    # save
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s-%s' % (var, dat, reg + zoom*'-zoom', mon))
+
 
 def pdddiff():
     """Plot effect of standard deviation on melt"""
