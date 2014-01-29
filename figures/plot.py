@@ -8,6 +8,7 @@ import iris.plot as iplt
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap, LogNorm
+from mpl_toolkits.mplot3d import axes3d
 mm = 1 / 25.4
 plt.rc('figure', figsize=(85*mm, 65*mm))
 plt.rc('figure.subplot', left=9/85., right=83/85., bottom=8/65., top=63/65.)
@@ -88,6 +89,15 @@ def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.1)):
     ax.plot(xlim, poly(xlim), c=c, ls=ls)
     ax.text(*textpos, s=r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
             color=c, transform=ax.transAxes)
+
+
+def _dteff3d():
+    """Plot effective temperature effect in 3D"""
+    ax = plt.gca()
+    x = np.linspace(-10, 10, 11)
+    y = np.linspace(0, 10, 11)
+    x, y = np.meshgrid(x, y)
+    ax.plot_wireframe(x, y, _teffdiff(x, y))
 
 
 def _dteffcontour():
@@ -230,22 +240,13 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False):
     # add linear fit
     if mon == 'all' and var == 'sigma':
         _linfit(x.compressed(), y.compressed())
+        ax = plt.axes([0.15, 0.15, 0.3, 0.3], projection='3d')
+        _dteff3d()
 
     # save
     if type(mon) is int: mon = str(mon+1).zfill(2)
     _savefig('stdev-param-scatter-%s-%s-%s-%s' % (var, dat, reg + zoom*'-zoom', mon))
 
-
-def pdddiff():
-    """Plot effect of standard deviation on melt"""
-
-    from mpl_toolkits.mplot3d import axes3d
-    T = np.linspace(-5, 5, 21)
-    S = np.linspace(1, 5, 21)
-    T, S = np.meshgrid(T, S)
-    ax = plt.axes(projection='3d')
-    ax.plot_wireframe(T, S, _teffdiff(T, S))
-    _savefig('pdddiff')
 
 ### Command-line interface ###
 
@@ -264,7 +265,6 @@ if __name__ == "__main__":
     parser.add_argument('--map', action='store_true', help=drawmap.__doc__)
     parser.add_argument('--densmap', action='store_true', help=densmap.__doc__)
     parser.add_argument('--scatter', action='store_true', help=scatter.__doc__)
-    parser.add_argument('--pdddiff', action='store_true', help=pdddiff.__doc__)
     args = parser.parse_args()
     ann = args.annvar
     dat = args.dataset
@@ -294,4 +294,3 @@ if __name__ == "__main__":
             for mon in range(12):
                 plt.clf()
                 drawmap(ltm, std, dat, reg, mon)
-    if args.pdddiff: pdddiff()
