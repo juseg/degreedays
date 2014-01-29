@@ -10,8 +10,6 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap, LogNorm
 from mpl_toolkits.mplot3d import axes3d
 mm = 1 / 25.4
-plt.rc('figure', figsize=(85*mm, 65*mm))
-plt.rc('figure.subplot', left=9/85., right=83/85., bottom=8/65., top=63/65.)
 plt.rc('font', size=6)
 plt.rc('image', cmap='spectral')
 plt.rc('mathtext', default='regular')
@@ -80,7 +78,7 @@ def _setxylim(reg, zoom=False):
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.1)):
+def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.5, 0.1)):
     """Add linear fit"""
     ax = plt.gca()
     xlim = ax.get_xlim()
@@ -94,10 +92,18 @@ def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.1, 0.1)):
 def _dteff3d():
     """Plot effective temperature effect in 3D"""
     ax = plt.gca()
-    x = np.linspace(-10, 10, 11)
-    y = np.linspace(0, 10, 11)
-    x, y = np.meshgrid(x, y)
-    ax.plot_wireframe(x, y, _teffdiff(x, y))
+    t = np.linspace(-20, 20, 101)
+    s = np.linspace(0.001, 10, 101)
+    t, s = np.meshgrid(t, s)
+    ax.plot_wireframe(t, s, _teffdiff(t, s), rstride=5, cstride=5,
+                      color='k', linewidth=0.5)
+    ax.set_frame_on=True,
+    ax.view_init(45, -105)
+    ax.set_zlim(0, 5)
+    ax.set_xlabel('T')
+    ax.set_ylabel(r'$\sigma$')
+    ax.set_zlabel(r'$\Delta T_{eff}$')
+    ax.set_zticks(np.arange(0, 6))
 
 
 def _dteffcontour():
@@ -105,15 +111,16 @@ def _dteffcontour():
 
     # prepare grid
     ax = plt.gca()
-    x = np.linspace(*ax.get_xlim(), num=101)
-    y = np.linspace(*ax.get_ylim(), num=101)
+    x = np.linspace(*ax.get_xlim(), num=501)
+    y = np.linspace(*ax.get_ylim(), num=501)
     x, y = np.meshgrid(x, y)
 
     # plot tdeff contours
     cs = ax.contour(x, y, _teffdiff(x, y),
                     levels=[1e-6, 1e-3, 1e-1, 1],
                     colors='k', linewidths=0.2)
-    cs.clabel(fontsize=4, fmt=u'$\Delta T_{eff} = %g °C$')
+    cs.clabel(fmt=u'$\Delta T_{eff} = %g °C$',
+              manual=[(-10,2), (-18,5.5), (-14,7), (-5,8)])
 
 
 def _savefig(output, png=True, pdf=False):
@@ -171,8 +178,16 @@ def drawmap(ltm, std, dat, reg, mon):
     _savefig('stdev-param-map-%s-%s-%s' % (dat, reg, mon))
 
 
-def scatter(ltm, std, var, dat, reg, mon, zoom=False):
+def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
     """Draw scatter plots"""
+
+    # initialize figure
+    if large:
+        fig = plt.figure(figsize=(178*mm, 135*mm))
+        ax = fig.add_axes([9/178., 8/135., 167/178., 125/135.])
+    else:
+        fig = plt.figure(figsize=(85*mm, 65*mm))
+        ax = fig.add_axes([9/85., 8/65., 74/85., 55/65.])
 
     # plot stdev data
     x = _extract(ltm, mon).data
@@ -193,28 +208,33 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False):
         c = clist[mon]
         cmap = None
     if var == 'dteff': y = _teffdiff(x, y)
-    plt.scatter(x, y, marker='+', c=c,  alpha=0.02, cmap=cmap)
+    ax.scatter(x, y, marker='+', c=c,  alpha=0.05, cmap=cmap)
 
     # set axes properties and labels
     _setxylim(reg, zoom=zoom)
-    plt.xlabel(u'Long-term monthly mean (°C)')
+    ax.set_xlabel(u'Long-term monthly mean (°C)')
     if var == 'sigma':
-        _dteffcontour()
-        plt.ylabel('Long-term monthly standard deviation (K)')
+        ax.set_ylabel('Long-term monthly standard deviation (K)')
     if var == 'dteff':
-        plt.yscale('log')
-        plt.ylim(1e-6, 1e0)
-        plt.ylabel('Effective temperature increase (K)')
+        ax.set_yscale('log')
+        ax.set_ylim(1e-6, 1e0)
+        ax.set_ylabel('Effective temperature increase (K)')
 
     # add linear fit
-    if mon == 'all' and var == 'sigma':
+    if mon == 'all':
         _linfit(x.compressed(), y.compressed())
-        ax = plt.axes([0.15, 0.15, 0.3, 0.3], projection='3d')
+        ax = fig.add_axes([10/178., 15/135., 80/178., 40/135.],
+                          projection='3d')
+
+    # add effective temperature contours and 3D plot
+    if large and var == 'sigma':
+        _dteffcontour()
         _dteff3d()
 
     # save
     if type(mon) is int: mon = str(mon+1).zfill(2)
-    _savefig('stdev-param-scatter-%s-%s-%s-%s' % (var, dat, reg + zoom*'-zoom', mon))
+    _savefig('stdev-param-scatter-%s-%s-%s-%s'
+             % (var, dat, reg + zoom*'-zoom', mon + large*'-large'))
 
 
 ### Command-line interface ###
@@ -224,6 +244,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--annvar', action='store_true',
                         help='Do not remove annual variability')
+    parser.add_argument('-l', '--large', action='store_true',
+                        help='Produce large figures')
     parser.add_argument('-z', '--zoom', action='store_true',
                         help='Zoom on summer values')
     parser.add_argument('-d', '--dataset', default='era40')
@@ -246,7 +268,7 @@ if __name__ == "__main__":
     if args.fig2:
         plt.clf()
         ltm, std = _load('era40', 'grl', ann=False)
-        scatter(ltm, std, 'sigma', 'era40', 'grl', 'all', zoom=False)
+        scatter(ltm, std, 'sigma', 'era40', 'grl', 'all', zoom=False, large=True)
     ltm, std = _load(dat, reg, ann)
     dat = dat + ann*'ann'
     if args.scatter:
