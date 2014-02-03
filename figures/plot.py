@@ -12,7 +12,6 @@ from mpl_toolkits.mplot3d import axes3d
 mm = 1 / 25.4
 plt.rc('font', size=6)
 plt.rc('image', cmap='spectral')
-plt.rc('mathtext', default='regular')
 plt.rc('savefig', dpi=254)
 
 
@@ -77,14 +76,19 @@ def _setxylim(ax, reg, zoom=False):
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(ax, x, y, w=None, c='k', ls='-', textpos=(0.5, 0.1)):
+def _linfit(ax, x, y, w=None, c='k', ls='-'):
     """Add linear fit"""
     xlim = ax.get_xlim()
+    xmin, xmax = ax.get_xlim()
+    ymin, ymax = ax.get_ylim()
     coef = np.polyfit(x, y, deg=1, w=w)
     poly = np.poly1d(coef)
     ax.plot(xlim, poly(xlim), c=c, ls=ls)
-    ax.text(*textpos, s=r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
-            color=c, transform=ax.transAxes)
+    textslope = (xmax-xmin)/(ymax-ymin)*ax.bbox.height/ax.bbox.width*coef[0]
+    print coef[0], textslope
+    ax.text(-25., poly(-25.)+0.1,
+            r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
+            color=c, rotation=np.degrees(np.arctan(textslope)))
 
 
 def _dteff3d(ax):
@@ -92,14 +96,15 @@ def _dteff3d(ax):
     t = np.linspace(-20, 20, 101)
     s = np.linspace(0.001, 10, 101)
     t, s = np.meshgrid(t, s)
+    ax.view_init(45, -105)
     ax.plot_wireframe(t, s, _teffdiff(t, s), rstride=5, cstride=5,
                       color='k', linewidth=0.5)
-    ax.set_frame_on=True,
-    ax.view_init(45, -105)
+    ax.contour(t, s, _teffdiff(t, s), levels=[1e-6, 1e-3, 1e-1, 1],
+                colors='b', linewidths=0.5, linestyles='-')
     ax.set_zlim(0, 5)
-    ax.set_xlabel('T')
-    ax.set_ylabel(r'$\sigma$')
-    ax.set_zlabel(r'$\Delta T_{eff}$')
+    ax.set_xlabel(u'\n$T$ (°C)', linespacing=2)
+    ax.set_ylabel(r'$\sigma$ (K)')
+    ax.set_zlabel(r'$\Delta T_{eff}$ (K)')
     ax.set_zticks(np.arange(0, 6))
 
 
@@ -114,8 +119,8 @@ def _dteffcontour(ax):
     # plot tdeff contours
     cs = ax.contour(x, y, _teffdiff(x, y),
                     levels=[1e-6, 1e-3, 1e-1, 1],
-                    colors='k', linewidths=0.2)
-    cs.clabel(fmt=u'$\Delta T_{eff} = %g °C$',
+                    colors='k', linewidths=0.5, linestyles='--')
+    cs.clabel(fmt=r'$\Delta T_{eff} = %g$ K',
               manual=[(-10,2), (-18,5.5), (-14,7), (-5,8)])
 
 
