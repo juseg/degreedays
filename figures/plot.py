@@ -71,16 +71,14 @@ def _teffdiff(T, S):
     return S / 2.**.5 * (np.exp(-u**2)/np.pi**.5 + u*erfc(-u)) - (T>0)*T
 
 
-def _setxylim(reg, zoom=False):
+def _setxylim(ax, reg, zoom=False):
     """Set axes limits"""
-    ax = plt.gca()
     ax.set_xlim((-30. if zoom else -45. if reg == 'grl' else -70.), 10.)
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.5, 0.1)):
+def _linfit(ax, x, y, w=None, c='k', ls='-', textpos=(0.5, 0.1)):
     """Add linear fit"""
-    ax = plt.gca()
     xlim = ax.get_xlim()
     coef = np.polyfit(x, y, deg=1, w=w)
     poly = np.poly1d(coef)
@@ -89,9 +87,8 @@ def _linfit(x, y, w=None, c='k', ls='-', textpos=(0.5, 0.1)):
             color=c, transform=ax.transAxes)
 
 
-def _dteff3d():
+def _dteff3d(ax):
     """Plot effective temperature effect in 3D"""
-    ax = plt.gca()
     t = np.linspace(-20, 20, 101)
     s = np.linspace(0.001, 10, 101)
     t, s = np.meshgrid(t, s)
@@ -106,11 +103,10 @@ def _dteff3d():
     ax.set_zticks(np.arange(0, 6))
 
 
-def _dteffcontour():
+def _dteffcontour(ax):
     """Add effective temperature effect contours"""
 
     # prepare grid
-    ax = plt.gca()
     x = np.linspace(*ax.get_xlim(), num=501)
     y = np.linspace(*ax.get_ylim(), num=501)
     x, y = np.meshgrid(x, y)
@@ -183,8 +179,10 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
 
     # initialize figure
     if large:
-        fig = plt.figure(figsize=(178*mm, 135*mm))
+        fig = plt.figure(0, (178*mm, 135*mm))
         ax = fig.add_axes([9/178., 8/135., 167/178., 125/135.])
+        ax3d = fig.add_axes([10/178., 15/135., 80/178., 40/135.],
+                          projection='3d')
     else:
         fig = plt.figure(figsize=(85*mm, 65*mm))
         ax = fig.add_axes([9/85., 8/65., 74/85., 55/65.])
@@ -211,25 +209,23 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
     ax.scatter(x, y, marker='+', c=c,  alpha=0.05, cmap=cmap)
 
     # set axes properties and labels
-    _setxylim(reg, zoom=zoom)
-    ax.set_xlabel(u'Long-term monthly mean (°C)')
+    _setxylim(ax, reg, zoom=zoom)
+    ax.set_xlabel(U'Long-term monthly mean $T$ (°C)')
     if var == 'sigma':
-        ax.set_ylabel('Long-term monthly standard deviation (K)')
+        ax.set_ylabel(r'Long-term monthly standard deviation $\sigma$ (K)')
     if var == 'dteff':
         ax.set_yscale('log')
         ax.set_ylim(1e-6, 1e0)
-        ax.set_ylabel('Effective temperature increase (K)')
+        ax.set_ylabel(r'Effective temperature increase $\Delta T_{eff}$ (K)')
 
     # add linear fit
     if mon == 'all':
-        _linfit(x.compressed(), y.compressed())
-        ax = fig.add_axes([10/178., 15/135., 80/178., 40/135.],
-                          projection='3d')
+        _linfit(ax, x.compressed(), y.compressed())
 
     # add effective temperature contours and 3D plot
     if large and var == 'sigma':
-        _dteffcontour()
-        _dteff3d()
+        _dteffcontour(ax)
+        _dteff3d(ax3d)
 
     # save
     if type(mon) is int: mon = str(mon+1).zfill(2)
