@@ -85,9 +85,8 @@ def _linfit(ax, x, y, w=None, c='k', ls='-'):
     poly = np.poly1d(coef)
     ax.plot(xlim, poly(xlim), c=c, ls=ls)
     textslope = (xmax-xmin)/(ymax-ymin)*ax.bbox.height/ax.bbox.width*coef[0]
-    print coef[0], textslope
     ax.text(-25., poly(-25.)+0.1,
-            r'$\sigma = %.2f \cdot T + %.2f$' % tuple(coef),
+            r'$\sigma = %.2f \cdot T_{ann} + %.2f$' % tuple(coef),
             color=c, rotation=np.degrees(np.arctan(textslope)))
 
 
@@ -102,7 +101,7 @@ def _dteff3d(ax):
     ax.contour(t, s, _teffdiff(t, s), levels=[1e-6, 1e-3, 1e-1, 1],
                 colors='b', linewidths=0.5, linestyles='-')
     ax.set_zlim(0, 5)
-    ax.set_xlabel(u'\n$T$ (°C)', linespacing=2)
+    ax.set_xlabel(u'\n$T_{ann}$ (°C)', linespacing=2)
     ax.set_ylabel(r'$\sigma$ (K)')
     ax.set_zlabel(r'$\Delta T_{eff}$ (K)')
     ax.set_zticks(np.arange(0, 6))
@@ -215,7 +214,7 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
 
     # set axes properties and labels
     _setxylim(ax, reg, zoom=zoom)
-    ax.set_xlabel(U'Long-term monthly mean $T$ (°C)')
+    ax.set_xlabel(U'Long-term monthly mean $T_{ann}$ (°C)')
     if var == 'sigma':
         ax.set_ylabel(r'Long-term monthly standard deviation $\sigma$ (K)')
     if var == 'dteff':
