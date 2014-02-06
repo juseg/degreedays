@@ -76,14 +76,15 @@ def _setxylim(ax, reg, zoom=False):
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(ax, x, y, w=None, c='k', ls='-'):
+def _linfit(ax, x, y, xfit=-99., c='k'):
     """Add linear fit"""
     xlim = ax.get_xlim()
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
-    coef = np.polyfit(x, y, deg=1, w=w)
+    coef = np.polyfit(x, y, deg=1, w=(x>xfit))
     poly = np.poly1d(coef)
-    ax.plot(xlim, poly(xlim), c=c, ls=ls)
+    ax.plot((xmin, xfit), poly((xmin, xfit)), c=c, ls='-.')
+    ax.plot((xfit, xmax), poly((xfit, xmax)), c=c, ls='-')
     textslope = (xmax-xmin)/(ymax-ymin)*ax.bbox.height/ax.bbox.width*coef[0]
     ax.text(-25., poly(-25.)+0.1,
             r'$\sigma = %.2f \cdot T_{ann} + %.2f$' % tuple(coef),
@@ -224,7 +225,7 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
 
     # add linear fit
     if mon == 'all':
-        _linfit(ax, x.compressed(), y.compressed())
+        _linfit(ax, x.compressed(), y.compressed(), xfit=-10.)
 
     # add effective temperature contours and 3D plot
     if large and var == 'sigma':
