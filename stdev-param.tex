@@ -42,25 +42,25 @@ In multimillenial numerical simulations of ice sheet growth and decay, surface m
         + \frac{T_{ann}}{2} \, \mathrm{erfc} \left(-\frac{T_{ann}}{\sqrt{2}\sigma}\right)\right],
 \end{eqnarray}
 
-where t is the time, $T$ is the air temperature [$^\circ$C], and $\sigma$ is the standard deviation of $T$ from the annual mean air temperature cycle $T_{ann}$ [$^\circ$C]. According to atmospheric reanalysis data, $\sigma$ is subject to significant variation over the globe, which predominates the surface mass balance model’s response \citep{seguinot-2013}.
+where t is the time, $T$ is the air temperature [$^\circ$C], and $\sigma$ is the standard deviation of $T$ [K] from the annual mean air temperature cycle $T_{ann}$ [$^\circ$C]. According to atmospheric reanalysis data, $\sigma$ is subject to significant variation over the globe, which has a significant influence on the response of surface mass balances \citep{seguinot-2013}.
 
-Over the Greenland ice sheet, the analysis of in-situ measurements suggests that the present-day $\sigma$ distribution is subject to annual variability, with lowest values occurring in the melting period and at the ice sheet's margins, and can be linearly related to ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011}. Including such seasonal and spatial $\sigma$ variability in simulations of the Greenland ice sheet is key to modelling the present-day ice surface response in agreement with observations \citep{rogozhina-rau-inpress}. However, the important value of a PDD approach is its applicability to studies of former glaciations, requiring realistic $\sigma$ values under climate conditions different from today. Here, we present evidence from reanalysis data that the $\sigma$ distribution over the Greenland ice sheet is largely related to variations in near-surface air temperature, which provides the basis for a parametrization of daily variability over ice sheet surfaces.
+Over the Greenland ice sheet, an analysis of in-situ temperature measurements indicates that the present-day distribution of $\sigma$ is subject to an annual variability, with lowest values occurring in the melting period and at the Greenland ice sheet margins \citep{fausto-etal-2011}. Moreover, there appear to be a linear relationship between $\sigma$ and ice surface elevation \citep{fausto-etal-2009}. Including such seasonal and spatial $\sigma$ variability in simulations of the Greenland ice sheet is key to modelling the present-day ice surface response in agreement with observations \citep{rogozhina-rau-inpress}. However, the importance of a PDD approach is its applicability to paleoglaciological studies, requiring realistic $\sigma$ values under climate conditions different from today. Here, we present evidence from reanalysis data that the $\sigma$ distribution over the Greenland ice sheet is largely related to variations in near-surface air temperature, which provides the basis for a parametrization of daily variability over ice sheet surfaces.
 
-Using the European Centre for Medium-Range Weather Forecasts’ ERA-40 reanalysis \citep{uppala-etal-2005} over the 44-years period 1958--2001, we compute the spatial distribution of long-term monthly mean surface air temperature $T_{ann}$, and long-term monthly standard deviation of daily mean surface air temperature $\sigma$. Daily mean surface air temperature is computed in first hand as an average of the four daily analysis time-steps (00:00, 06:00, 12:00, 18:00). Standard deviation is calculated using temperature deviations relative to the long-term daily mean for the entire period, in order to remove variability associated with the annual cycle. This comes as an improvement over our previous methods \citep{seguinot-2013,rogozhina-rau-inpress} that tended to overestimate spring and autumn $\sigma$ values.
+Using the European Centre for Medium-Range Weather Forecasts’ ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958--2001, we compute the spatial distribution of long-term monthly mean surface air temperature $T_{ann}$, and long-term monthly standard deviation of daily mean surface air temperature $\sigma$. Daily mean surface air temperature is computed in first hand as an average of the four daily analysis time-steps (00:00, 06:00, 12:00, 18:00). Standard deviation is calculated using temperature deviations relative to the long-term daily mean for the entire period, in order to remove variability associated with the annual cycle. This approach is an improvement over our previous methods \citep{seguinot-2013,rogozhina-rau-inpress} which tended to overestimate spring and autumn $\sigma$ values.
 
 \begin{figure*}
     \centering\includegraphics{stdev-param-scatter-sigma-era40-grl-all-large}
-    \caption{Long-term monthly standard deviation compared to the long-term monthly mean of daily mean surface air temperature over the Greenland ice sheet, according to the ERA-40 reanalysis \citep{uppala-etal-2005} over the 44-years period 1958–2001. Seasons are coloured in red (JJA), yellow (SON), blue (DJF) and green (MAM). The solid line corresponds to a linear regression for $T_{ann}>-10\,^\circ$C. Dashed contours represent the effect of daily variability on effective temperature for melt, also shown in the 3D wireframe inset.}
+    \caption{Long-term monthly standard deviation $\sigma$ compared to the long-term monthly mean surface air temperature $T_ann$ over the Greenland ice sheet, according to the ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958–2001. Seasons are coloured in red (JJA), yellow (SON), blue (DJF) and green (MAM). The solid line corresponds to a linear regression for $T_{ann} > -10\,^\circ$C, with coefficient of determination of $r^2 = 0.69$. Dashed lines represent the effect of daily variability on effective temperature for melt $\Delta T_{eff}$. As shown by the 3D wireframe inset, $\Delta T_{eff}$ is always positive, and increases when $T_ann$ approaches the melting point.}
     \label{fig:grl}
 \end{figure*}
 
-Over the Greenland ice sheet, there exists an anticorrelation between the long-term monthly temperature means $T_{ann}$ and the long-term monthly standard deviations $\sigma$ (Figure~\ref{fig:grl}). Using points for which $T_{ann}>-10\,^\circ$C we derive a linear relation between $\sigma$ and $T_{ann}$,
+Over the Greenland ice sheet, there exists an anticorrelation between long-term monthly temperature means $T_{ann}$ and long-term monthly standard deviations $\sigma$ (Figure~\ref{fig:grl}). Although a significant spread exists around winter temperatures (Figure~\ref{fig:grl}, blue), this spread becomes much more restricted when approaching conditions of intensive surface melting during summer (Figure~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. For temperatures $T_{ann}$ above $-10\,^\circ$C, the relationship between $\sigma$ and $T_{ann}$ is nearly linear,
 
 \begin{equation} \label{eq:sigma}
-    \sigma = 0.17 \cdot T_{ann} + 1.68.
+    \sigma = 0.17 \cdot T_{ann} + 1.68\,.
 \end{equation}
 
-Although a significant spread exists around winter temperatures (Figure~\ref{fig:grl}, blue), the reconstructed trend appears more robust over the period of intensive surface melting (Figure~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. To support this point we define the effective temperature for melt,
+To emphasize conditions in which daily variability exerts strongest influence on modelled melt rates, we define the effective temperature for melt as
 
 \begin{equation} \label{eq:teff}
     T_{eff} = \frac{d\mathrm{PDD}}{dt}
@@ -68,19 +68,19 @@ Although a significant spread exists around winter temperatures (Figure~\ref{fig
             + \frac{T_{ann}}{2} \, \mathrm{erfc} \left(-\frac{T_{ann}}{\sqrt{2}\sigma}\right).
 \end{equation}
 
-The net effect of daily variability on melt can then be expressed as a shift in effective temperature (Figure~\ref{fig:grl}, dashed contours),
+The net effect of daily variability $\sigma$ on melt can then be expressed as a shift in effective temperature (Figure~\ref{fig:grl}, dashed lines),
 
 \begin{equation} \label{eq:dteff}
     \Delta T_{eff} = T_{eff} - \max(T_{ann}, 0),
 \end{equation}
 
-Note that $\Delta T_{eff}$ is always positive, hence the use of higher values systematically results in increased modelled surface melt \citep{rogozhina-rau-inpress}. A decrease and associated restriction of ice melt in response to increasing air temperatures indicates a natural mechanism for self-inhibition of ice loss, which is, under the conditions close to the melting point, modulated by endothermic phase changes (Figure~\ref{fig:grl}).
+Note that $\Delta T_{eff}$ is always positive (Figure~\ref{fig:grl}, 3D inset), hence the use of higher values systematically results in increased modelled surface melt \citep{rogozhina-rau-inpress}. The decrease of $\sigma$ in response to increasing air temperatures tends to restrict ice surface melt, thereby indicating a natural mechanism for self-inhibition of ice loss from the ice sheet (Figure~\ref{fig:grl}).
 
-The strong dependence of $\sigma$ on air temperature shown by reanalysis data suggests that previously discussed relations between standard deviation and ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011} originate from lapse-rate effects on near-surface air temperature and are only valid under present-day climatic conditions. However, a nearly linear dependence of $\sigma$ on temperature provides a simple recipe for a dynamic adjustment of the standard deviation parameter to evolving external forcing. Although the inferred relation is generally inapplicable to ice-free territories where more complex connections should be expected \citep{seguinot-2013}, our analysis does however reveal a similar relation between mean temperature and daily variability across Antarctica (Figure~\ref{fig:both}) and thus suggests portability of this parametrization to modelling studies of glaciations in regions with essentially different geographical and climatic settings.
+The strong dependence of $\sigma$ on mear-surface air temperature shown by the reanalysis data indicates that previously discussed relationships between standard deviation and ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011} originate from lapse-rate effects on near-surface air temperature and are only valid under present-day climatic conditions. However, a nearly linear dependence of $\sigma$ on near-surface air temperature provides a simple proxy for a dynamic adjustment of the standard deviation parameter to evolving external forcing on ice sheet dymanic effects. Although the inferred relationship is generally inapplicable to model ice sheet nucleation over ice-free territories, where more complex connections should be expected \citep{seguinot-2013}, our analysis does, however, reveal a similar relationship between near-surface mean air temperature and daily variability across Antarctica (Figure~\ref{fig:both}) and therefore indicates potential applicability of this parametrization to modelling studies of former glaciation in regions with essentially different geographical and climatic settings.
 
 \begin{figure}
     \centering\includegraphics{stdev-param-scatter-sigma-era40-both-zoom-07}
-    \caption{July Greenland (red) and January Antarctic (gray) long-term monthly standard deviation compared to the long-term monthly mean of daily mean surface air temperature over the ice sheets, according to the ERA-40 reanalysis data \citep{uppala-etal-2005} over the 44-years period 1958–2001.}
+    \caption{July Greenland (red) and January Antarctic (gray) long-term monthly standard deviation $\sigma$ compared to the long-term monthly mean surface air temperature $T$ over the ice sheets, according to ERA-40 reanalysis data \citep{uppala-etal-2005} over a 44-years period 1958–2001.}
     \label{fig:both}
 \end{figure}
 
@@ -88,7 +88,7 @@ The strong dependence of $\sigma$ on air temperature shown by reanalysis data su
 
 \section{Acknowledgments}
 
-Funding was provided by the German Academic Exchange Service (DAAD) and the Lillemor och Hans W:son Ahlmanns fond för geografisk forskning. This study is part of the multinational research initiative IceGeoHeat.
+Funding was provided by the German Academic Exchange Service (DAAD) and the Lillemor och Hans W:son Ahlmanns fond för geografisk forskning. This study is part of the multinational research initiative IceGeoHeat, and the Cordilleran ice sheet through a glacial cycle modelling study funded through A. Stroeven (Stockholm University).
 
 \bibliography{references}
 \bibliographystyle{igs}
