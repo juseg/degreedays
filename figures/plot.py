@@ -78,16 +78,37 @@ def _setxylim(ax, reg, zoom=False):
 
 def _linfit(ax, x, y, xfit=-99., c='k'):
     """Add linear fit"""
-    xlim = ax.get_xlim()
+
+    # get axes limits
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
-    coef = np.polyfit(x, y, deg=1, w=(x>xfit))
+
+    # crop data
+    w = x>xfit
+    x = x[w]
+    y = y[w]
+
+    # perform linear fit
+    coef = np.polyfit(x, y, deg=1)
     poly = np.poly1d(coef)
+
+    # compute r2 (non-weighted case)
+    r2 = (poly(x).std()/y.std())**2
+
+    # compute r2 (general case)
+    #f = poly(x)
+    #sstot = ((y-y.mean())**2).sum()
+    #ssreg = ((f-y.mean())**2).sum()
+    #ssres = ((y-f)**2).sum()
+    #r = 1 - ssres/sstot
+
+    # draw line and add equation
     ax.plot((xmin, xfit), poly((xmin, xfit)), c=c, ls='-.')
     ax.plot((xfit, xmax), poly((xfit, xmax)), c=c, ls='-')
     textslope = (xmax-xmin)/(ymax-ymin)*ax.bbox.height/ax.bbox.width*coef[0]
     ax.text(-25., poly(-25.)+0.1,
-            r'$\sigma = %.2f \cdot T_{ann} + %.2f$' % tuple(coef),
+            r'$\sigma = %.2f \cdot T_{ann} + %.2f;\ r^2 = %.2f$'
+            % (coef[0], coef[1], r2),
             color=c, rotation=np.degrees(np.arctan(textslope)))
 
 
