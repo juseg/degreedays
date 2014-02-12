@@ -76,35 +76,29 @@ def _setxylim(ax, reg, zoom=False):
     ax.set_ylim(0., (4. if zoom else 10.))
 
 
-def _linfit(ax, x, y, xfit=-99., c='k'):
+def _linfit(ax, x, y, c='k'):
     """Add linear fit"""
 
     # get axes limits
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
 
-    # crop data
-    w = x>xfit
-    x = x[w]
-    y = y[w]
-
     # perform linear fit
-    coef = np.polyfit(x, y, deg=1)
+    coef = np.polyfit(x, y, deg=1, w=1/y)
     poly = np.poly1d(coef)
 
     # compute r2 (non-weighted case)
-    r2 = (poly(x).std()/y.std())**2
+    #r2 = (poly(x).std()/y.std())**2
 
     # compute r2 (general case)
-    #f = poly(x)
-    #sstot = ((y-y.mean())**2).sum()
-    #ssreg = ((f-y.mean())**2).sum()
-    #ssres = ((y-f)**2).sum()
-    #r = 1 - ssres/sstot
+    f = poly(x)
+    sstot = ((y-y.mean())**2).sum()
+    ssreg = ((f-y.mean())**2).sum()
+    ssres = ((y-f)**2).sum()
+    r2 = 1 - ssres/sstot
 
     # draw line and add equation
-    ax.plot((xmin, xfit), poly((xmin, xfit)), c=c, ls='-.')
-    ax.plot((xfit, xmax), poly((xfit, xmax)), c=c, ls='-')
+    ax.plot((xmin, xmax), poly((xmin, xmax)), c=c)
     textslope = (xmax-xmin)/(ymax-ymin)*ax.bbox.height/ax.bbox.width*coef[0]
     ax.text(-25., poly(-25.)+0.1,
             r'$\sigma = %.2f \cdot T_{ann} + %.2f;\ r^2 = %.2f$'
@@ -246,7 +240,7 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
 
     # add linear fit
     if mon == 'all':
-        _linfit(ax, x.compressed(), y.compressed(), xfit=-10.)
+        _linfit(ax, x.compressed(), y.compressed())
 
     # add effective temperature contours and 3D plot
     if large and var == 'sigma':
