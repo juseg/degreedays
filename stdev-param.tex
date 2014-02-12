@@ -54,7 +54,7 @@ Using the European Centre for Medium-Range Weather Forecasts’ ERA-40 reanalysi
     \label{fig:grl}
 \end{figure*}
 
-Over the Greenland ice sheet, there exists an anticorrelation between long-term monthly temperature means $T_{ann}$ and long-term monthly standard deviations $\sigma$ (Figure~\ref{fig:grl}). Although a significant spread exists around winter temperatures (Figure~\ref{fig:grl}, blue), this spread becomes much more restricted when approaching conditions of intensive surface melting during summer (Figure~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. Using a $1/\sigma$-weighted least square regression, we derive a linear relationship between $\sigma$ and $T_{ann}$,
+Over the Greenland ice sheet, there exists an anticorrelation between long-term monthly temperature means $T_{ann}$ and long-term monthly standard deviations $\sigma$ (Fig.~\ref{fig:grl}). Although a significant spread exists around winter temperatures (Fig.~\ref{fig:grl}, blue), this spread becomes much more restricted when approaching conditions of intensive surface melting during summer (Fig.~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. Using a $1/\sigma$-weighted least square regression, we derive a linear relationship between $\sigma$ and $T_{ann}$,
 
 \begin{equation} \label{eq:sigma}
     \sigma = 0.17 \cdot T_{ann} + 1.68\,.
@@ -68,15 +68,15 @@ To emphasize conditions in which daily variability exerts strongest influence on
             + \frac{T_{ann}}{2} \, \mathrm{erfc} \left(-\frac{T_{ann}}{\sqrt{2}\sigma}\right).
 \end{equation}
 
-The net effect of daily variability $\sigma$ on melt can then be expressed as a shift in effective temperature (Figure~\ref{fig:grl}, dashed lines),
+The net effect of daily variability $\sigma$ on melt can then be expressed as a shift in effective temperature (Fig.~\ref{fig:grl}, dashed lines),
 
 \begin{equation} \label{eq:dteff}
     \Delta T_{eff} = T_{eff} - \max(T_{ann}, 0),
 \end{equation}
 
-Note that $\Delta T_{eff}$ is always positive (Figure~\ref{fig:grl}, 3D inset), hence the use of higher values systematically results in increased modelled surface melt \citep{rogozhina-rau-inpress}. The decrease of $\sigma$ in response to increasing air temperatures tends to restrict ice surface melt, thereby indicating a natural mechanism for self-inhibition of ice loss from the ice sheet (Figure~\ref{fig:grl}).
+Note that $\Delta T_{eff}$ is always positive (Fig.~\ref{fig:grl}, 3D inset), hence the use of higher values systematically results in increased modelled surface melt \citep{rogozhina-rau-inpress}. The decrease of $\sigma$ in response to increasing air temperatures tends to restrict ice surface melt, thereby indicating a natural mechanism for self-inhibition of ice loss from the ice sheet (Fig.~\ref{fig:grl}).
 
-The strong dependence of $\sigma$ on near-surface air temperature shown by the reanalysis data points out that previously discussed relationships between standard deviation and ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011} originate from lapse-rate effects on near-surface air temperature and are only valid under present-day climatic conditions. However, a nearly linear dependence of $\sigma$ on near-surface air temperature provides a simple proxy for a dynamic adjustment of the standard deviation parameter to evolving external forcing. Although the inferred relationship (Eqn. \ref{eq:sigma}) does generally not hold true over ice-free territories, where more complex connections should be expected \citep{seguinot-2013}, our analysis does, however, reveal a similar relationship between near-surface mean air temperature and daily variability across Antarctica (Figure~\ref{fig:both}) and therefore indicates potential applicability of this parametrization to modelling studies of former glaciation in regions with essentially different geographical and climatic settings.
+The strong dependence of $\sigma$ on near-surface air temperature shown by the reanalysis data points out that previously discussed relationships between standard deviation and ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011} originate from lapse-rate effects on near-surface air temperature and are only valid under present-day climatic conditions. However, a nearly linear dependence of $\sigma$ on near-surface air temperature provides a simple proxy for a dynamic adjustment of the standard deviation parameter to evolving external forcing. Although the inferred relationship (Eqn. \ref{eq:sigma}) does generally not hold true over ice-free territories, where more complex connections should be expected \citep{seguinot-2013}, our analysis does, however, reveal a similar relationship between near-surface mean air temperature and daily variability across Antarctica (Fig.~\ref{fig:both}) and therefore indicates potential applicability of this parametrization to modelling studies of former glaciation in regions with essentially different geographical and climatic settings.
 
 \begin{figure}
     \centering\includegraphics{stdev-param-scatter-sigma-era40-both-zoom-07}
