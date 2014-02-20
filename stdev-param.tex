@@ -36,42 +36,42 @@ In multimillenial numerical simulations of ice sheet growth and decay, surface m
     \mathrm{PDD} &=& \frac{1}{\sigma\sqrt{2\pi}}
         \int_{t_1}^{t_2} \mathrm{d}t
         \int_{0}^{\infty} \mathrm{d}T \,
-        T \exp\left({-\frac{(T-T_{ann})^2}{2\sigma^2}}\right)\\
+        T \exp\left({-\frac{(T-T_{ltd})^2}{2\sigma^2}}\right)\\
     &=& \int_{t_1}^{t_2} \mathrm{d}t
-        \left[\frac{\sigma}{\sqrt{2\pi}} \exp\left({-\frac{T_{ann}^2}{2\sigma^2}}\right)
-        + \frac{T_{ann}}{2} \, \mathrm{erfc} \left(-\frac{T_{ann}}{\sqrt{2}\sigma}\right)\right],
+        \left[\frac{\sigma}{\sqrt{2\pi}} \exp\left({-\frac{T_{ltd}^2}{2\sigma^2}}\right)
+        + \frac{T_{ltd}}{2} \, \mathrm{erfc} \left(-\frac{T_{ltd}}{\sqrt{2}\sigma}\right)\right],
 \end{eqnarray}
 
-where t is the time, $T$ is the air temperature [$^\circ$C], and $\sigma$ is the standard deviation of $T$ [K] from the annual mean air temperature cycle $T_{ann}$ [$^\circ$C]. According to atmospheric reanalysis data, $\sigma$ is subject to significant variation over the globe, which has a significant influence on the response of surface mass balances \citep{seguinot-2013}.
+where t is the time, $T$ is the air temperature [$^\circ$C], and $\sigma$ is the standard deviation of $T$ [K] from the annual temperature cycle $T_{ltd}$ [$^\circ$C]. According to atmospheric reanalysis data, $\sigma$ is subject to significant variation over the globe, which has a significant influence on the response of surface mass balances \citep{seguinot-2013}.
 
 Over the Greenland ice sheet, an analysis of in-situ temperature measurements indicates that the present-day distribution of $\sigma$ is subject to an annual variability, with lowest values occurring in the melting period and at the Greenland ice sheet margins, and can be linearly related to ice surface elevation \citep{fausto-etal-2009,fausto-etal-2011}. Including such seasonal and spatial $\sigma$ variability in simulations of the Greenland ice sheet is key to modelling the present-day ice surface response in agreement with observations \citep{rogozhina-rau-inpress}. However, the importance of a PDD approach is its applicability to paleoglaciological studies, requiring realistic $\sigma$ values under climate conditions different from today. Here, we present evidence from reanalysis data that the $\sigma$ distribution over the Greenland ice sheet is largely related to variations in near-surface air temperature, which provides the basis for a parametrization of daily variability over ice sheet surfaces.
 
-Using the European Centre for Medium-Range Weather Forecasts’ ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958--2001, we compute the spatial distribution of long-term monthly mean surface air temperature $T_{ann}$, and long-term monthly standard deviation of daily mean surface air temperature $\sigma$. Daily mean surface air temperature is computed in first hand as an average of the four daily analysis time-steps (00:00, 06:00, 12:00, 18:00). Standard deviation is calculated using temperature deviations relative to the long-term daily mean for the entire period, in order to remove variability associated with the annual cycle. This approach is an improvement over our previous methods \citep{seguinot-2013,rogozhina-rau-inpress} which tended to overestimate spring and autumn $\sigma$ values.
+Using the European Centre for Medium-Range Weather Forecasts’ ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958--2001, we compute the spatial distribution of long-term monthly mean surface air temperature $T_{ltm}$, and long-term monthly standard deviation of daily mean surface air temperature $\sigma$. Daily mean surface air temperature is computed in first hand as an average of the four daily analysis time-steps (00:00, 06:00, 12:00, 18:00). Standard deviation is calculated using temperature deviations relative to the long-term daily mean for the entire period, in order to remove variability associated with the annual cycle. This approach is an improvement over our previous methods \citep{seguinot-2013,rogozhina-rau-inpress} which tended to overestimate spring and autumn $\sigma$ values.
 
 \begin{figure*}
     \centering\includegraphics{stdev-param-scatter-sigma-era40-grl-all-large}
-    \caption{Long-term monthly standard deviation $\sigma$ compared to the long-term monthly mean surface air temperature $T_ann$ over the Greenland ice sheet, according to the ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958–2001. Seasons are coloured in red (JJA), yellow (SON), blue (DJF) and green (MAM). The solid line corresponds to a $1/\sigma$-weighted least square regression over all data points (Eqn. \ref{eq:sigma}). Dashed lines represent the effect of daily variability on effective temperature for melt $\Delta T_{eff}$. As shown by the 3D wireframe inset, $\Delta T_{eff}$ is always positive, and increases when $T_ann$ approaches the melting point (Eqn. \ref{eq:dteff}).}
+    \caption{Long-term monthly standard deviation $\sigma$ compared to the long-term monthly mean surface air temperature $T_{ltm}$ over the Greenland ice sheet, according to the ERA-40 reanalysis \citep{uppala-etal-2005} over a 44-years period 1958–2001. Seasons are coloured in red (JJA), yellow (SON), blue (DJF) and green (MAM). The solid line corresponds to a $1/\sigma$-weighted least square regression over all data points (Eqn. \ref{eq:sigma}). Dashed lines represent the effect of daily variability on effective temperature for melt $\Delta T_{eff}$. As shown by the 3D wireframe inset, $\Delta T_{eff}$ is always positive, and increases when $T_{ltm}$ approaches the melting point (Eqn. \ref{eq:dteff}).}
     \label{fig:grl}
 \end{figure*}
 
-Over the Greenland ice sheet, there exists an anticorrelation between long-term monthly temperature means $T_{ann}$ and long-term monthly standard deviations $\sigma$ (Fig.~\ref{fig:grl}). Although a significant spread exists around winter temperatures (Fig.~\ref{fig:grl}, blue), this spread becomes much more restricted when approaching conditions of intensive surface melting during summer (Fig.~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. Using a $1/\sigma$-weighted least square regression, we derive a linear relationship between $\sigma$ and $T_{ann}$,
+Over the Greenland ice sheet, there exists an anticorrelation between long-term monthly temperature means $T_{ltm}$ and long-term monthly standard deviations $\sigma$ (Fig.~\ref{fig:grl}). Although a significant spread exists around winter temperatures (Fig.~\ref{fig:grl}, blue), this spread becomes much more restricted when approaching conditions of intensive surface melting during summer (Fig.~\ref{fig:grl}, red), when the standard deviation parameter exerts strongest influence on modelled melt rates \citep{rogozhina-rau-inpress}. Using a $1/\sigma$-weighted least square regression, we derive a linear relationship between $\sigma$ and $T_{ltm}$,
 
 \begin{equation} \label{eq:sigma}
-    \sigma = 0.17 \cdot T_{ann} + 1.68\,.
+    \sigma = 0.17 \cdot T_{ltm} + 1.68\,.
 \end{equation}
 
 To emphasize conditions in which daily variability exerts strongest influence on modelled melt rates, we define the effective temperature for melt as
 
 \begin{equation} \label{eq:teff}
     T_{eff} = \frac{d\mathrm{PDD}}{dt}
-        = \frac{\sigma}{\sqrt{2\pi}} \exp\left({-\frac{T_{ann}^2}{2\sigma^2}}\right)
-            + \frac{T_{ann}}{2} \, \mathrm{erfc} \left(-\frac{T_{ann}}{\sqrt{2}\sigma}\right).
+        = \frac{\sigma}{\sqrt{2\pi}} \exp\left({-\frac{T_{ltd}^2}{2\sigma^2}}\right)
+            + \frac{T_{ltd}}{2} \, \mathrm{erfc} \left(-\frac{T_{ltd}}{\sqrt{2}\sigma}\right).
 \end{equation}
 
 The net effect of daily variability $\sigma$ on melt can then be expressed as a shift in effective temperature (Fig.~\ref{fig:grl}, dashed lines),
 
 \begin{equation} \label{eq:dteff}
-    \Delta T_{eff} = T_{eff} - \max(T_{ann}, 0),
+    \Delta T_{eff} = T_{eff} - \max(T_{ltm}, 0),
 \end{equation}
 
 Note that $\Delta T_{eff}$ is always positive (Fig.~\ref{fig:grl}, 3D inset), hence the use of higher values systematically results in increased modelled surface melt \citep{rogozhina-rau-inpress}. The decrease of $\sigma$ in response to increasing air temperatures tends to restrict ice surface melt, thereby indicating a natural mechanism for self-inhibition of ice loss from the ice sheet (Fig.~\ref{fig:grl}).
