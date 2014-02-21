@@ -279,12 +279,12 @@ if __name__ == "__main__":
 
     if args.fig1:
         plt.clf()
-        ltm, std = _load('era40', 'both', ann=False)
-        scatter(ltm, std, 'sigma', 'era40', 'both', 6, zoom=True)
-    if args.fig2:
-        plt.clf()
         ltm, std = _load('era40', 'grl', ann=False)
         scatter(ltm, std, 'sigma', 'era40', 'grl', 'all', zoom=False, large=True)
+    if args.fig2:
+        plt.clf()
+        ltm, std = _load('era40', 'both', ann=False)
+        scatter(ltm, std, 'sigma', 'era40', 'both', 6, zoom=True)
     ltm, std = _load(dat, reg, ann)
     dat = dat + ann*'ann'
     if args.scatter:
