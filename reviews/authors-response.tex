@@ -1,0 +1,125 @@
+\documentclass[10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{natbib}
+\usepackage{xcolor}
+%\usepackage[pdftex]{graphicx}
+%\graphicspath{{../figures/}}
+%\renewcommand\thefigure{AC\arabic{figure}}
+
+\setlength{\parskip}{1.5ex}
+\setlength{\parindent}{0em}
+%\renewcommand\familydefault{\sfdefault}
+
+\def\referee#1{\bigskip\textcolor{blue!50!black}{\textit{#1}}}
+\def\msquote#1{\begin{quote}\textit{#1}\end{quote}}
+
+% ----------------------------------------------------------------------
+
+\begin{document}
+\section*{Authors' response to the reviews}
+
+Dear Editor,
+
+We think that we have addressed the reviews and finally submit our revised correspondence to the \textit{Journal of Glaciology}. Please find our point-by-point response to the reviews below, with description of corresponding changes made in the revised manuscript.
+
+% ----------------------------------------------------------------------
+
+\bigskip
+\textbf{Review~{\#}1}
+
+\referee{This brief correspondence describes improvement to a surface mass balance parameterization presented in Rogozhina and Rau (in  press). The authors present a linear relationship between two critical variables typically used to derive surface melt using a positive degree-day scheme: temperature standard deviations and long-term monthly mean temperature. The relation is derived from 44-years of reanalysis. Standard deviations are usually held constant in PDD schemes, but the authors argue that this parameter tends to vary over the ice sheet. As a result, they suggest that using the proposed linear relationship to infer standard deviations from monthly temperature is simple, more accurate, and flexible enough to be extended to different climates and glaciated regions. Improving traditional PDD and SMB parameterization is critical for the field of ice sheet modeling, and the authors present helpful insight into the need for better treatment of melt, especially spatially and temporally. [...]}
+
+We fully support this succinct, accurate and positive description of our work.
+
+%\referee{Therefore, I recommend this correspondence for publication. }
+
+%\referee{Below, I highlight a few confusing points in the manuscript that should be clarified before publication:}
+
+\referee{Line 28-29: Briefly justify use of the ERA (as opposed to pure observations or to regional climate model output - are the temperatures expected to be accurate where melt matters along the margins?) How might the choice of reanalysis impact the results?}
+
+In this study, we would rather rely on observational data than on an atmospheric reanalysis. However, the observational record over the Greenland ice sheet is both spatially sparse and short in time, with most station data spanning only over a couple of years \citep[see e.g.~][]{fausto-etal-2011}. This is not enough to compute a climatology or derive accurate estimates of temperature standard deviation. We emphasize this point with a new sentence in the last paragraph of the revised manuscript:
+
+\msquote{Although the inferred relationship (Eqn. 3) needs to be validated against observations, the observational record over the Greenland ice sheet is currently too short to allow for the present analysis.}
+
+Finally, we have applied our analysis to both ERA-40 over ERA-Interim data, and obtained better results with ERA-40, which we attribute to the longer (44-years) integration period. We have not applied our analysis, though, to unconstrained circulation model output \textbf{[Irina, help!]}.
+
+\referee{Line 32-34: Please be clearer about why this new approach is considered an improvement.}
+
+In our previous, independent publications \citep{seguinot-2013,rogozhina-rau-2014}, the seasonal cycle was not removed prior to the calculation of temperature standard deviation, potentially leading to overestimates of daily temperature variability during spring and autumn, when seasonal temperatures may vary significantly between the beginning and the end of a given month. In the present study, calculations were performed on time-series de-trended from their (daily mean) annual cycle. New standard deviation values show that this overestimation was significant, which is why we consider this as an improvement. The corresponding sentence in the manuscript was developed into:
+
+\msquote{This approach is an improvement over our previous methods \citep{seguinot-2013,rogozhina-rau-2014}, which included seasonal variability in the standard deviation calculation, and therefore tended to overestimate $\sigma$ values during spring and autumn, when the seasonal trend over a given month may be significant.}
+
+\referee{Line 35: This first sentence is awkward. Maybe a separate sentence explaining that the ERA vegetation mask is used to define the extent of the Greenland Ice Sheet would be clearer.}
+
+Following this suggestion, we have cropped this sentence and appended the previous paragraph with the following new sentence:
+
+\msquote{Finally, we exclude ice-free grid cells from our analysis using the ERA-40 vegetation types and land-sea mask.}
+
+\referee{Line 46: I am not sure what the authors mean by "natural". Please clarify.}
+
+We acknowledge that this sentence was unclear. By ``natural'', we mean that air temperature is constrained around the freezing point by the melt process happening at the surface. In the revised manuscript, we rephrased this into the following:
+
+\msquote{The decrease of $\sigma$ in response to increasing temperature, most probably modulated by endothermic phase changes around the freezing point, tends to restrict ice surface melt, thereby indicating a natural mechanism for self-inhibition of ice loss from the ice sheet (Fig.~1).}
+
+\referee{Line 18 and 47: ERA is a reanalysis of data; "reanalysis data" is not an accurate term.}
+
+We have rephrased this expression throughout the manuscript.
+
+\referee{Line 49: It is not clear what the authors mean by evolving external forcing. Does this statement cover long-term changes to climatology or just variability within a specific climatology?}
+
+We mean long-term changes in climatology, to which we now refer to as ``evolving climate forcing''. 
+
+\referee{Fig. 1, Caption: Please reference the equation being used to calculate the effective temperature curves}
+
+A reference was added in the caption.
+
+\referee{Fig. 1: It is not clear why the regression equation that is written directly on the figure is not the same as Eq. 3.}
+
+We would like to thank Reviewer~{\#}1 very much for noticing this fatal mistake on the most critical line of our manuscript and saving us from including it in the final publication. Eqn.~3 corresponded to an earlier (and slightly worst) fit. The equation written directly on the figure is the valid one, while the one in the text was corrected.
+
+In general, we are very thankful to Reviewer~{\#}1 for this careful and supportive examination of our manuscript, and most particularly for noticing the latter mistake.
+
+% ----------------------------------------------------------------------
+
+\bigskip
+\textbf{Review~{\#}2}
+
+%\referee{This is a useful Correspondence that I think should be published. It allows for parameterization of daily temperature variability over a range of glacierized regions. It seems to me to require very little correction (minor typos only) or editing.}
+
+%\referee{Two minor points:}
+
+\referee{Line 54: I think you mean glacierized. Glaciated means the area was glacierized in the past, i.e. there is evidence of past glaciation.}
+
+This is what we mean. We have corrected the term.
+
+\referee{The Rogozhina and Rau citation needs to be completed.}
+
+Indeed, the paper was recently published \citep{rogozhina-rau-2014}. 
+
+We thank Reviewer~{\#}2 for this concise and supportive review.
+
+% ----------------------------------------------------------------------
+
+\bigskip
+\textbf{Editor comment}
+
+\referee{One additional comment from me: it seems a little strange that this "improvement" to a Cryosphere paper should appear so soon after the Cryosphere paper is published (in fact, this Correspondence potentially could even beat the Cryosphere paper to publication). Why did you not just revise the Cryosphere paper before it went to the presses ?}
+
+We would like to emphasize that these two publications correspond to two distinct studies, performed by different authors. Calculations for the Cryosphere paper were performed by Irina Rogozhina and Dominik Rau in 2012, at a time where Julien Seguinot was working on the same topic as, yet independently from, this group. For the present correspondence, which represents the fruit from our new collaboration on this topic, the distribution of temperature standard deviation was re-calculated from scratch using an updated algorithm to remove the seasonal cycle.
+
+More importantly, the two papers differ in terms of scientific reach. While the Cryosphere paper presents estimates of surface mass runoff from the Greenland ice sheet, for which it makes sense to make full use of available gridded climatologies, the present study presents a simplistic parametrization, less accurate than the raw data, but potentially applicable to evolving climate forcing, for instance in palaeo-climate studies or projection runs.
+
+We thank you very much for your patience in waiting for the present response and look forward for future communications.
+
+{\flushright
+    With Best Regards,\\
+    Julien Seguinot and Irina Rogozhina.\\
+}
+
+\bibliography{../references}
+\bibliographystyle{igs}
+
+\end{document}
