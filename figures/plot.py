@@ -139,7 +139,7 @@ def _dteffcontour(ax):
               manual=[(-10,2), (-18,5.5), (-14,7), (-5,8)])
 
 
-def _savefig(output, png=True, pdf=False):
+def _savefig(output, png=False, pdf=True):
     print 'saving ' + output
     if png: plt.savefig(output + '.png')
     if pdf: plt.savefig(output + '.pdf')
@@ -226,7 +226,8 @@ def scatter(ltm, std, var, dat, reg, mon, zoom=False, large=False):
         c = clist[mon]
         cmap = None
     if var == 'dteff': y = _teffdiff(x, y)
-    ax.scatter(x, y, marker='+', c=c,  alpha=0.05, cmap=cmap)
+    sc = ax.scatter(x, y, marker='+', c=c,  alpha=0.05, cmap=cmap)
+    sc.set_rasterized(True)
 
     # set axes properties and labels
     _setxylim(ax, reg, zoom=zoom)
