@@ -1,0 +1,18 @@
+# Files produces by latex
+*.aux
+*.bbl
+*.blg
+*.fff
+*.log
+*.out
+*.pdf
+*.ttt
+
+# Figures and data files
+*.png
+*.nc
+*.html
+
+# Saved versions
+/versions
+
