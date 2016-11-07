@@ -8,11 +8,7 @@
 *.pdf
 *.ttt
 
-# Figures and data files
-*.png
+# Data and figures
 *.nc
-*.html
-
-# Saved versions
-/versions
-
+*.pyc
+*.png
